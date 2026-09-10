@@ -120,24 +120,24 @@ class Sensors:
   # TODO: calculate correct camera transforms once installed on robot chassis
   class Pose:
     POSE_SENSOR_CONFIGS: tuple[PoseSensorConfig, ...] = (
-      PoseSensorConfig(
-        name = "Left", 
-        transform = Transform3d(
-          Translation3d(x = units.inchesToMeters(-0.5), y = units.inchesToMeters(14.5), z = units.inchesToMeters(18.0)),
-          Rotation3d(roll = units.degreesToRadians(0), pitch = units.degreesToRadians(-5.5), yaw = units.degreesToRadians(88.0))
-        ),
-        stream = "http://10.28.81.6:1182/?action=stream",
-        aprilTagFieldLayout = _aprilTagFieldLayout
-      ),
-      PoseSensorConfig(
-        name = "Right",
-        transform = Transform3d(
-        Translation3d(x = units.inchesToMeters(1.0), y = units.inchesToMeters(-14.0), z = units.inchesToMeters(8.75)),
-        Rotation3d(roll = units.degreesToRadians(0), pitch = units.degreesToRadians(-17.0), yaw = units.degreesToRadians(-90.0))
-      ),
-        stream = "http://10.28.81.6:1184/?action=stream",
-        aprilTagFieldLayout = _aprilTagFieldLayout
-      )
+      # PoseSensorConfig(
+      #   name = "Left", 
+      #   transform = Transform3d(
+      #     Translation3d(x = units.inchesToMeters(-0.5), y = units.inchesToMeters(14.5), z = units.inchesToMeters(18.0)),
+      #     Rotation3d(roll = units.degreesToRadians(0), pitch = units.degreesToRadians(-5.5), yaw = units.degreesToRadians(88.0))
+      #   ),
+      #   stream = "http://10.28.81.6:1182/?action=stream",
+      #   aprilTagFieldLayout = _aprilTagFieldLayout
+      # ),
+      # PoseSensorConfig(
+      #   name = "Right",
+      #   transform = Transform3d(
+      #   Translation3d(x = units.inchesToMeters(1.0), y = units.inchesToMeters(-14.0), z = units.inchesToMeters(8.75)),
+      #   Rotation3d(roll = units.degreesToRadians(0), pitch = units.degreesToRadians(-17.0), yaw = units.degreesToRadians(-90.0))
+      # ),
+      #   stream = "http://10.28.81.6:1184/?action=stream",
+      #   aprilTagFieldLayout = _aprilTagFieldLayout
+      # )
     )
 
 class Cameras:
@@ -151,7 +151,7 @@ class Controllers:
 class Game:
   class Robot:
     TYPE = RobotType.Competition
-    NAME: str = "TBD (Offseason)" # TODO: provide chosen robot name from team
+    NAME: str = "TBD" # TODO: provide chosen robot name from team
 
   class Commands:
     pass
@@ -180,4 +180,9 @@ class Game:
           Target.CropCircleLeft: Pose3d(0, 0, 0, Rotation3d(Rotation2d.fromDegrees(0))),
           Target.CropCircleRight: Pose3d(0, 0, 0, Rotation3d(Rotation2d.fromDegrees(0)))
         }
+      }
+
+      TARGET_ZONES: dict[Alliance, dict[Target, Zone]] = {
+        Alliance.Blue: {},
+        Alliance.Red: {}
       }

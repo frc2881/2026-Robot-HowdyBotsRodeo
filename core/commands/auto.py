@@ -34,7 +34,7 @@ class Auto:
     self._autos = SendableChooser()
     self._autos.setDefaultOption("0: None", self.auto_NONE)
     
-    # self._autos.addOption("6: Custom", self.auto_CUSTOM)
+    self._autos.addOption("1: Custom", self.auto_CUSTOM)
 
     self._autos.onChange(lambda auto: self.set(auto()))
     SmartDashboard.putData("Robot/Auto", self._autos)

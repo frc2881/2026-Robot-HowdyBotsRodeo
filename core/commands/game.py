@@ -2,7 +2,6 @@ from typing import TYPE_CHECKING
 from commands2 import Command, cmd
 from wpilib import RobotBase
 from wpimath import units
-from wpimath.geometry import Pose3d, Rotation3d
 from lib import logger, utils
 from lib.classes import ControllerRumbleMode, ControllerRumblePattern
 from core.classes import Target
@@ -23,6 +22,12 @@ class Game:
     return (
       self._robot.drive.alignToTargetPose(self._robot.localization.getRobotPose, lambda: self._robot.targeting.getNearestTargetPose(targets), alignRotationOnly)
       .withName("Game:AlignRobotToNearestTargetPose")
+    )
+
+  def alignRobotToTargetHeading(self, target: Target) -> Command:
+    return (
+      self._robot.drive.alignToTargetHeading(self._robot.localization.getRobotPose, lambda: self._robot.targeting.getTargetPose(target))
+      .withName(f'Game:AlignRobotToTargetHeading:{ target.name }')
     )
   
   def resetGyro(self) -> Command:

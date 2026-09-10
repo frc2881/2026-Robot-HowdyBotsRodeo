@@ -14,3 +14,16 @@ class Target(Enum):
 class LaunchMetric:
   distance: units.meters
   speed: units.percent
+
+class MatchState(Enum):
+  Stopped = auto()
+  Auto = auto()
+  Teleop = auto()
+  EndGame = auto()
+
+class LightsMode(Enum):
+  Default = auto()
+  RobotNotConnected = auto()
+  RobotNotHomed = auto()
+  RobotIsHoming = auto()
+  VisionNotReady = auto()

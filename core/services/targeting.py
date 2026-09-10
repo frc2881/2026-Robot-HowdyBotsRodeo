@@ -1,25 +1,24 @@
 from typing import TYPE_CHECKING, Callable, Optional
-from wpilib import SmartDashboard
-from wpimath import units
 from wpimath.geometry import Pose2d, Pose3d
+from wpimath.kinematics import ChassisSpeeds
 from lib import logger, utils
-from lib.classes import Alliance
+from lib.classes import Alliance, Zone
 from core.classes import Target
 import core.constants as constants
 
 class Targeting():
   def __init__(
       self,
-      getRobotPose: Callable[[], Pose2d]
+      getRobotPose: Callable[[], Pose2d],
+      getChassisSpeeds: Callable[[], ChassisSpeeds]
     ) -> None:
     self._constants = constants.Services.Targeting
     self._getRobotPose = getRobotPose
+    self._getChassisSpeeds = getChassisSpeeds
 
     self._alliance: Optional[Alliance] = None
     self._targets: dict[Target, Pose3d] = {}
-
-    self._launchDistances = tuple(t.distance for t in self._constants.LAUNCH_METRICS)
-    self._launchSpeeds = tuple(t.speed for t in self._constants.LAUNCH_METRICS)
+    self._targetZones: dict[Target, Zone] = {}
 
     utils.addRobotPeriodic(self._periodic)
 
@@ -31,6 +30,7 @@ class Targeting():
     if utils.getAlliance() != self._alliance:
       self._alliance = utils.getAlliance()
       self._targets = constants.Game.Field.Targets.TARGETS[self._alliance]
+      self._targetZones = constants.Game.Field.Targets.TARGET_ZONES[self._alliance]
 
   def getTargetPose(self, target: Target) -> Pose3d:
     return self._targets.get(target, Pose3d(self._getRobotPose()))
