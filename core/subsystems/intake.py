@@ -4,6 +4,7 @@ from wpimath import units
 from lib import logger, utils
 import core.constants as constants
 
+# TODO: implement intake subsystem once designed in CAD
 class Intake(Subsystem):
   def __init__(self) -> None:
     super().__init__()

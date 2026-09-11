@@ -35,7 +35,7 @@ class Subsystems:
     TRACK_WIDTH: units.meters = units.inchesToMeters(20.5)
 
     _drivingMotorModel = MotorModel.NEO
-    _swerveModuleGearKit = SwerveModuleGearKit.High # TODO: confirm gearing kit installed with swerve drive
+    _swerveModuleGearKit = SwerveModuleGearKit.High # TODO: confirm actual gearing kit installed with swerve drive
     
     _swerveModuleConstants = SwerveModuleConstants(
       wheelDiameter = units.inchesToMeters(3.0),
