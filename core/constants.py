@@ -165,20 +165,20 @@ class Game:
     class Targets:
       TARGETS: dict[Alliance, dict[Target, Pose3d]] = {
         Alliance.Blue: {
-          Target.StableLeft: Pose3d(0, 0, 0, Rotation3d(Rotation2d.fromDegrees(0))),
-          Target.StableRight: Pose3d(0, 0, 0, Rotation3d(Rotation2d.fromDegrees(0))),
-          Target.HaybineLeft: Pose3d(0, 0, 0, Rotation3d(Rotation2d.fromDegrees(0))),
-          Target.HaybineRight: Pose3d(0, 0, 0, Rotation3d(Rotation2d.fromDegrees(0))),
-          Target.CropCircleLeft: Pose3d(0, 0, 0, Rotation3d(Rotation2d.fromDegrees(0))),
-          Target.CropCircleRight: Pose3d(0, 0, 0, Rotation3d(Rotation2d.fromDegrees(0)))
+          Target.StableLeft: Pose3d(8.3, 5.15, 0, Rotation3d(Rotation2d.fromDegrees(0))),
+          Target.StableRight: Pose3d(8.3, 1.65, 0, Rotation3d(Rotation2d.fromDegrees(0))),
+          Target.HaybineLeft: Pose3d(0.6, 7.2, 0, Rotation3d(Rotation2d.fromDegrees(0))),
+          Target.HaybineRight: Pose3d(0.6, 0.8, 0, Rotation3d(Rotation2d.fromDegrees(0))),
+          Target.CropCircleLeft: Pose3d(1.75, 5.7, 0, Rotation3d(Rotation2d.fromDegrees(0))),
+          Target.CropCircleRight: Pose3d(1.75, 2.35, 0, Rotation3d(Rotation2d.fromDegrees(0)))
         },
         Alliance.Red: {
-          Target.StableLeft: Pose3d(0, 0, 0, Rotation3d(Rotation2d.fromDegrees(0))),
-          Target.StableRight: Pose3d(0, 0, 0, Rotation3d(Rotation2d.fromDegrees(0))),
-          Target.HaybineLeft: Pose3d(0, 0, 0, Rotation3d(Rotation2d.fromDegrees(0))),
-          Target.HaybineRight: Pose3d(0, 0, 0, Rotation3d(Rotation2d.fromDegrees(0))),
-          Target.CropCircleLeft: Pose3d(0, 0, 0, Rotation3d(Rotation2d.fromDegrees(0))),
-          Target.CropCircleRight: Pose3d(0, 0, 0, Rotation3d(Rotation2d.fromDegrees(0)))
+          Target.StableLeft: Pose3d(8.300, 2.950, 0, Rotation3d(Rotation2d.fromDegrees(180))),
+          Target.StableRight: Pose3d(8.300, 6.450, 0, Rotation3d(Rotation2d.fromDegrees(180))),
+          Target.HaybineLeft: Pose3d(15.9, 0.80, 0, Rotation3d(Rotation2d.fromDegrees(180))),
+          Target.HaybineRight: Pose3d(15.9, 7.20, 0, Rotation3d(Rotation2d.fromDegrees(180))),
+          Target.CropCircleLeft: Pose3d(14.800, 2.350, 0, Rotation3d(Rotation2d.fromDegrees(180))),
+          Target.CropCircleRight: Pose3d(14.800, 5.700, 0, Rotation3d(Rotation2d.fromDegrees(180))),
         }
       }
 

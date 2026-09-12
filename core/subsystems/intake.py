@@ -8,7 +8,7 @@ import core.constants as constants
 class Intake(Subsystem):
   def __init__(self) -> None:
     super().__init__()
-    self._constants = constants.Subsystems.Launcher
+    self._constants = constants.Subsystems.Intake
 
   def periodic(self) -> None:
     self._updateTelemetry()
