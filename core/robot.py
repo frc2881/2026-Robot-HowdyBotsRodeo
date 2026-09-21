@@ -11,7 +11,6 @@ from core.subsystems.launcher import Launcher
 from core.services.localization import Localization
 from core.services.targeting import Targeting
 from core.services.match import Match
-from core.classes import Target
 import core.constants as constants
 
 class RobotCore:
@@ -36,7 +35,7 @@ class RobotCore:
     
   def _initServices(self) -> None:
     self.localization = Localization(lambda: self.gyro.getHeading(), lambda: self.drive.getModulePositions(), self.poseSensors)
-    self.targeting = Targeting(lambda: self.localization.getRobotPose(), lambda: self.drive.getChassisSpeeds())
+    self.targeting = Targeting(lambda: self.localization.getRobotPose(), lambda: self.localization.getRobotZone(), lambda: self.drive.getChassisSpeeds())
     self.match = Match()
 
   def _initCommands(self) -> None:

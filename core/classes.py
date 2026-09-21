@@ -2,6 +2,9 @@ from enum import Enum, auto
 from dataclasses import dataclass
 from wpimath import units
 
+class AutoPath(Enum):
+  CUSTOM = auto()
+
 class Target(Enum):
   StableLeft = auto()
   StableRight = auto()
@@ -9,6 +12,10 @@ class Target(Enum):
   HaybineRight = auto()
   CropCircleLeft = auto()
   CropCircleRight = auto()
+
+class Zone(Enum):
+  AllianceZoneRight = auto()
+  AllianceZoneLeft = auto()
 
 @dataclass(frozen=True, slots=True)
 class LaunchMetric:

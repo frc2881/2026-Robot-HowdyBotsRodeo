@@ -1,6 +1,6 @@
 import wpilib
 from wpimath import units
-from wpimath.geometry import Pose3d, Transform3d, Translation3d, Rotation3d, Translation2d, Rotation2d
+from wpimath.geometry import Pose3d, Transform3d, Translation3d, Rotation3d, Translation2d, Rotation2d, Rectangle2d
 from wpimath.kinematics import SwerveDrive4Kinematics
 from robotpy_apriltag import AprilTagFieldLayout
 import navx
@@ -12,7 +12,6 @@ from lib.classes import (
   RobotType,
   Alliance, 
   PID,
-  Zone,
   MotorModel,
   SwerveModuleGearKit,
   SwerveModuleConstants, 
@@ -22,7 +21,7 @@ from lib.classes import (
   HeadingAlignmentConstants,
   PoseSensorConfig
 )
-from core.classes import Target, LaunchMetric
+from core.classes import Target, Zone, LaunchMetric
 import lib.constants
 
 _aprilTagFieldLayout = AprilTagFieldLayout(f'{ wpilib.getDeployDirectory() }/localization/2026-hayharvest.json')
@@ -60,20 +59,20 @@ class Subsystems:
     DRIVE_KINEMATICS = SwerveDrive4Kinematics(*(c.translation for c in SWERVE_MODULE_CONFIGS))
 
     TRANSLATION_MAX_VELOCITY: units.meters_per_second = lib.constants.Drive.SWERVE_MODULE_FREE_SPEEDS[_drivingMotorModel][_swerveModuleGearKit] * 1.0
-    ROTATION_MAX_VELOCITY: units.degrees_per_second = 540.0
+    ROTATION_MAX_VELOCITY: units.degrees_per_second = 720.0
 
     TARGET_POSE_ALIGNMENT_CONSTANTS = PoseAlignmentConstants(
       translationPID = PID(4.0, 0, 0),
-      translationMaxVelocity = 2.4,
-      translationPositionTolerance = 0.1,
+      translationMaxVelocity = 3.2,
+      translationPositionTolerance = 0.15,
       rotationPID = PID(4.0, 0, 0),
       rotationMaxVelocity = 720.0,
-      rotationPositionTolerance = 3.0
+      rotationPositionTolerance = 5.0
     )
 
     TARGET_HEADING_ALIGNMENT_CONSTANTS = HeadingAlignmentConstants(
       rotationPID = PID(0.01, 0, 0), 
-      rotationPositionTolerance = 0.5
+      rotationPositionTolerance = 1.0
     )
 
     DRIFT_CORRECTION_CONSTANTS = HeadingAlignmentConstants(
@@ -158,30 +157,36 @@ class Game:
   class Field:
     LENGTH = _aprilTagFieldLayout.getFieldLength()
     WIDTH = _aprilTagFieldLayout.getFieldWidth()
-    ZONE = Zone(start = Translation2d(0, 0), end = Translation2d(LENGTH, WIDTH))
+    BOUNDS = Rectangle2d(Translation2d(0, 0), Translation2d(LENGTH, WIDTH))
 
     # TODO: calculate all target poses from field layout
-    class Targets:
-      TARGETS: dict[Alliance, dict[Target, Pose3d]] = {
-        Alliance.Blue: {
-          Target.StableLeft: Pose3d(8.3, 5.15, 0, Rotation3d(Rotation2d.fromDegrees(0))),
-          Target.StableRight: Pose3d(8.3, 1.65, 0, Rotation3d(Rotation2d.fromDegrees(0))),
-          Target.HaybineLeft: Pose3d(0.6, 7.2, 0, Rotation3d(Rotation2d.fromDegrees(0))),
-          Target.HaybineRight: Pose3d(0.6, 0.8, 0, Rotation3d(Rotation2d.fromDegrees(0))),
-          Target.CropCircleLeft: Pose3d(1.75, 5.7, 0, Rotation3d(Rotation2d.fromDegrees(0))),
-          Target.CropCircleRight: Pose3d(1.75, 2.35, 0, Rotation3d(Rotation2d.fromDegrees(0)))
-        },
-        Alliance.Red: {
-          Target.StableLeft: Pose3d(8.300, 2.950, 0, Rotation3d(Rotation2d.fromDegrees(180))),
-          Target.StableRight: Pose3d(8.300, 6.450, 0, Rotation3d(Rotation2d.fromDegrees(180))),
-          Target.HaybineLeft: Pose3d(15.9, 0.80, 0, Rotation3d(Rotation2d.fromDegrees(180))),
-          Target.HaybineRight: Pose3d(15.9, 7.20, 0, Rotation3d(Rotation2d.fromDegrees(180))),
-          Target.CropCircleLeft: Pose3d(14.800, 2.350, 0, Rotation3d(Rotation2d.fromDegrees(180))),
-          Target.CropCircleRight: Pose3d(14.800, 5.700, 0, Rotation3d(Rotation2d.fromDegrees(180))),
-        }
+    TARGETS: dict[Alliance, dict[Target, Pose3d]] = {
+      Alliance.Blue: {
+        Target.StableLeft: Pose3d(8.3, 5.15, 0, Rotation3d(Rotation2d.fromDegrees(0))),
+        Target.StableRight: Pose3d(8.3, 1.65, 0, Rotation3d(Rotation2d.fromDegrees(0))),
+        Target.HaybineLeft: Pose3d(0.6, 7.2, 0, Rotation3d(Rotation2d.fromDegrees(0))),
+        Target.HaybineRight: Pose3d(0.6, 0.8, 0, Rotation3d(Rotation2d.fromDegrees(0))),
+        Target.CropCircleLeft: Pose3d(1.75, 5.7, 0, Rotation3d(Rotation2d.fromDegrees(0))),
+        Target.CropCircleRight: Pose3d(1.75, 2.35, 0, Rotation3d(Rotation2d.fromDegrees(0)))
+      },
+      Alliance.Red: {
+        Target.StableLeft: Pose3d(8.300, 2.950, 0, Rotation3d(Rotation2d.fromDegrees(180))),
+        Target.StableRight: Pose3d(8.300, 6.450, 0, Rotation3d(Rotation2d.fromDegrees(180))),
+        Target.HaybineLeft: Pose3d(15.9, 0.80, 0, Rotation3d(Rotation2d.fromDegrees(180))),
+        Target.HaybineRight: Pose3d(15.9, 7.20, 0, Rotation3d(Rotation2d.fromDegrees(180))),
+        Target.CropCircleLeft: Pose3d(14.800, 2.350, 0, Rotation3d(Rotation2d.fromDegrees(180))),
+        Target.CropCircleRight: Pose3d(14.800, 5.700, 0, Rotation3d(Rotation2d.fromDegrees(180)))
       }
+    }
 
-      TARGET_ZONES: dict[Alliance, dict[Target, Zone]] = {
-        Alliance.Blue: {},
-        Alliance.Red: {}
+    # TODO: calculate alliance zone sections (right / left) from field layout
+    ZONES: dict[Alliance, dict[Zone, Rectangle2d]] = {
+      Alliance.Blue: {
+        Zone.AllianceZoneRight: Rectangle2d(Translation2d(0, 0), Translation2d(0, 0)),
+        Zone.AllianceZoneLeft: Rectangle2d(Translation2d(0, 0), Translation2d(0, 0))
+      },
+      Alliance.Red: {
+        Zone.AllianceZoneRight: Rectangle2d(Translation2d(0, 0), Translation2d(0, 0)),
+        Zone.AllianceZoneLeft: Rectangle2d(Translation2d(0, 0), Translation2d(0, 0))
       }
+    }
