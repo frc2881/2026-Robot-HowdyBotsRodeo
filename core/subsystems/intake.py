@@ -1,7 +1,6 @@
 from commands2 import Subsystem, Command
-from wpilib import SmartDashboard
 from wpimath import units
-from lib import logger, utils
+from lib import logger, telemetry, utils
 import core.constants as constants
 
 # TODO: implement intake subsystem once designed in CAD

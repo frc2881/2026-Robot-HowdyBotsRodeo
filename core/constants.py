@@ -7,7 +7,7 @@ import navx
 from rev import SparkLowLevel, AbsoluteEncoderConfig
 from pathplannerlib.config import RobotConfig
 from pathplannerlib.controller import PPHolonomicDriveController, PIDConstants
-from lib import logger, utils
+from lib import logger, telemetry, utils
 from lib.classes import (
   RobotType,
   Alliance, 
