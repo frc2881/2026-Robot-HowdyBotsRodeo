@@ -1,4 +1,5 @@
 from wpilib import DriverStation
+from commands2 import cmd
 from lib import logger, telemetry, utils
 from lib.controllers.xbox import XboxController
 from lib.sensors.gyro_navx2 import Gyro
@@ -11,6 +12,7 @@ from core.subsystems.launcher import Launcher
 from core.services.localization import Localization
 from core.services.targeting import Targeting
 from core.services.match import Match
+from core.classes import Target
 import core.constants as constants
 
 class RobotCore:
@@ -44,8 +46,8 @@ class RobotCore:
 
   def _initControllers(self) -> None:
     DriverStation.silenceJoystickConnectionWarning(not utils.isCompetitionMode())
-    self.driver = XboxController(constants.Controllers.DRIVER_CONTROLLER_PORT, constants.Controllers.INPUT_DEADBAND)
-    self.operator = XboxController(constants.Controllers.OPERATOR_CONTROLLER_PORT, constants.Controllers.INPUT_DEADBAND)
+    self.driver = XboxController(constants.Controllers.DRIVER_CONTROLLER_CONFIG)
+    self.operator = XboxController(constants.Controllers.OPERATOR_CONTROLLER_CONFIG)
 
   def _initTriggers(self) -> None:
     self._setupDriver()
@@ -96,10 +98,7 @@ class RobotCore:
     telemetry.log("Game/Robot/Name", constants.Game.Robot.NAME)
     telemetry.log("Game/Field/Length", constants.Game.Field.LENGTH)
     telemetry.log("Game/Field/Width", constants.Game.Field.WIDTH)
-    telemetry.log("Robot/Drive/Length", constants.Subsystems.Drive.BUMPER_LENGTH)
-    telemetry.log("Robot/Drive/Width", constants.Subsystems.Drive.BUMPER_WIDTH)
     telemetry.log("Robot/Cameras/Driver", constants.Cameras.DRIVER_STREAM)
-    telemetry.log("Robot/Sensors/Pose/Names", list(c.name for c in constants.Sensors.Pose.POSE_SENSOR_CONFIGS), element_type = str)
 
   def _periodic(self) -> None:
     self._updateTelemetry()

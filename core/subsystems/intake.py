@@ -1,5 +1,5 @@
-from commands2 import Subsystem, Command
 from wpimath import units
+from commands2 import Subsystem, Command
 from lib import logger, telemetry, utils
 import core.constants as constants
 
@@ -8,6 +8,8 @@ class Intake(Subsystem):
   def __init__(self) -> None:
     super().__init__()
     self._constants = constants.Subsystems.Intake
+
+    self._telemetryName = "Robot/Subsystems/Intake"
 
   def periodic(self) -> None:
     self._updateTelemetry()

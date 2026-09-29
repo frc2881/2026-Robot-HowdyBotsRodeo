@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
-from commands2 import Command, cmd
 from wpilib import RobotBase
+from commands2 import Command, cmd
 from lib import logger, telemetry, utils
 from lib.classes import ControllerRumbleMode, ControllerRumblePattern
 from core.classes import Target
