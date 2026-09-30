@@ -40,7 +40,7 @@ class Subsystems:
     _drivingMotorModel = MotorModel.NEO
     _swerveDriveModuleGearKit = SwerveDriveModuleGearKit.High # TODO: confirm actual gearing kit installed with swerve drive
     _swerveDriveModuleConstants = SwerveDriveModuleConfigConstants(
-      drivingControllerType = SparkLowLevel.SparkModel.kSparkFlex,
+      drivingControllerType = SparkLowLevel.SparkModel.kSparkMax,
       drivingMotorType = SparkLowLevel.MotorType.kBrushless,
       drivingFreeSpeed = lib.constants.Motors.FREE_SPEEDS[_drivingMotorModel],
       drivingGearReduction = lib.constants.Drive.Swerve.GEAR_RATIOS[_swerveDriveModuleGearKit],
