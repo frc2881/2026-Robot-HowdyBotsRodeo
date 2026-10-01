@@ -1,4 +1,3 @@
-import math
 from wpimath import units
 from lib import logger, telemetry, utils
 from lib.classes import RobotState, RobotMode
