@@ -6,16 +6,16 @@ class AutoPath(Enum):
   CUSTOM = auto()
 
 class Target(Enum):
-  StableLeft = auto()
-  StableRight = auto()
-  HaybineLeft = auto()
-  HaybineRight = auto()
-  CropCircleLeft = auto()
-  CropCircleRight = auto()
+  STABLE_LEFT = auto()
+  STABLE_RIGHT = auto()
+  HAYBINE_LEFT = auto()
+  HAYBINE_RIGHT = auto()
+  CROP_CIRCLE_LEFT = auto()
+  CROP_CIRCLE_RIGHT = auto()
 
 class Zone(Enum):
-  AllianceZoneRight = auto()
-  AllianceZoneLeft = auto()
+  ALLIANCE_ZONE_RIGHT = auto()
+  ALLIANCE_ZONE_LEFT = auto()
 
 @dataclass(frozen=True, slots=True)
 class LaunchMetric:
@@ -23,14 +23,14 @@ class LaunchMetric:
   speed: units.percent
 
 class MatchState(Enum):
-  Stopped = auto()
-  Auto = auto()
-  Teleop = auto()
-  EndGame = auto()
+  STOPPED = auto()
+  AUTO = auto()
+  TELEOP = auto()
+  END_GAME = auto()
 
 class LightsMode(Enum):
-  Default = auto()
-  RobotNotConnected = auto()
-  RobotNotHomed = auto()
-  RobotIsHoming = auto()
-  VisionNotReady = auto()
+  DEFAULT = auto()
+  ROBOT_NOT_CONNECTED = auto()
+  ROBOT_NOT_HOMED = auto()
+  ROBOT_IS_HOMING = auto()
+  VISION_NOT_READY = auto()
