@@ -15,12 +15,12 @@ class Match():
     self._updateTelemetry()
 
   def _updateMatch(self) -> None:
-    if utils.getRobotState() == RobotState.Enabled:
+    if utils.getRobotState() == RobotState.ENABLED:
       matchTime = utils.getMatchTime()
-      if utils.getRobotMode() == RobotMode.Auto:
+      if utils.getRobotMode() == RobotMode.AUTO:
         self._matchState = MatchState.Auto
         self._matchStateTime = matchTime
-      if utils.getRobotMode() == RobotMode.Teleop:
+      if utils.getRobotMode() == RobotMode.TELEOP:
         self._matchState = MatchState.EndGame if utils.isValueWithinRange(matchTime, 0, 31) else MatchState.Teleop
         self._matchStateTime = matchTime
     else:

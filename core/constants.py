@@ -38,7 +38,7 @@ class Subsystems:
     TRACK_WIDTH: units.meters = units.inchesToMeters(20.5)
 
     _drivingMotorModel = MotorModel.NEO
-    _swerveDriveModuleGearKit = SwerveDriveModuleGearKit.High # TODO: confirm actual gearing kit installed with swerve drive
+    _swerveDriveModuleGearKit = SwerveDriveModuleGearKit.HIGH # TODO: confirm actual gearing kit installed with swerve drive
     _swerveDriveModuleConstants = SwerveDriveModuleConfigConstants(
       drivingControllerType = SparkLowLevel.SparkModel.kSparkMax,
       drivingMotorType = SparkLowLevel.MotorType.kBrushless,
@@ -53,10 +53,10 @@ class Subsystems:
       telemetryName = "Robot/Subsystems/Drive/Modules"
     )
     SWERVE_DRIVE_MODULE_CONFIGS: tuple[SwerveDriveModuleConfig, SwerveDriveModuleConfig, SwerveDriveModuleConfig, SwerveDriveModuleConfig] = (
-      SwerveDriveModuleConfig(SwerveDriveModuleLocation.FrontLeft, 2, 3, -90, Translation2d(WHEEL_BASE / 2, TRACK_WIDTH / 2), _swerveDriveModuleConstants),
-      SwerveDriveModuleConfig(SwerveDriveModuleLocation.FrontRight, 4, 5, 0, Translation2d(WHEEL_BASE / 2, -TRACK_WIDTH / 2), _swerveDriveModuleConstants),
-      SwerveDriveModuleConfig(SwerveDriveModuleLocation.RearLeft, 6, 7, 180, Translation2d(-WHEEL_BASE / 2, TRACK_WIDTH / 2), _swerveDriveModuleConstants),
-      SwerveDriveModuleConfig(SwerveDriveModuleLocation.RearRight, 8, 9, 90, Translation2d(-WHEEL_BASE / 2, -TRACK_WIDTH / 2), _swerveDriveModuleConstants)
+      SwerveDriveModuleConfig(SwerveDriveModuleLocation.FRONT_LEFT, 2, 3, -90, Translation2d(WHEEL_BASE / 2, TRACK_WIDTH / 2), _swerveDriveModuleConstants),
+      SwerveDriveModuleConfig(SwerveDriveModuleLocation.FRONT_RIGHT, 4, 5, 0, Translation2d(WHEEL_BASE / 2, -TRACK_WIDTH / 2), _swerveDriveModuleConstants),
+      SwerveDriveModuleConfig(SwerveDriveModuleLocation.REAR_LEFT, 6, 7, 180, Translation2d(-WHEEL_BASE / 2, TRACK_WIDTH / 2), _swerveDriveModuleConstants),
+      SwerveDriveModuleConfig(SwerveDriveModuleLocation.REAR_RIGHT, 8, 9, 90, Translation2d(-WHEEL_BASE / 2, -TRACK_WIDTH / 2), _swerveDriveModuleConstants)
     )
     SWERVE_DRIVE_KINEMATICS = SwerveDrive4Kinematics(*(c.chassisTranslation for c in SWERVE_DRIVE_MODULE_CONFIGS))
 
@@ -88,9 +88,9 @@ class Subsystems:
     INPUT_LIMIT_DEMO: units.percent = 0.5
     INPUT_RATE_LIMIT_DEMO: units.percent = 0.5
 
-    SPEED_MODE = SpeedMode.Competition
-    DRIVE_ORIENTATION = DriveOrientation.Field
-    DRIFT_CORRECTION = State.Enabled
+    SPEED_MODE = SpeedMode.COMPETITION
+    DRIVE_ORIENTATION = DriveOrientation.FIELD
+    DRIFT_CORRECTION = State.ENABLED
 
   class Intake:
     pass # TODO: implement intake subsystem once designed in CAD
@@ -156,7 +156,7 @@ class Controllers:
 
 class Game:
   class Robot:
-    TYPE = RobotType.Competition
+    TYPE = RobotType.COMPETITION
     NAME: str = "TBD" # TODO: provide chosen robot name from team
 
   class Commands:
@@ -169,7 +169,7 @@ class Game:
 
     # TODO: calculate all target poses from field layout
     TARGETS: dict[Alliance, dict[Target, Pose3d]] = {
-      Alliance.Blue: {
+      Alliance.BLUE: {
         Target.StableLeft: Pose3d(8.3, 5.15, 0, Rotation3d(Rotation2d.fromDegrees(0))),
         Target.StableRight: Pose3d(8.3, 1.65, 0, Rotation3d(Rotation2d.fromDegrees(0))),
         Target.HaybineLeft: Pose3d(0.6, 7.2, 0, Rotation3d(Rotation2d.fromDegrees(0))),
@@ -177,7 +177,7 @@ class Game:
         Target.CropCircleLeft: Pose3d(1.75, 5.7, 0, Rotation3d(Rotation2d.fromDegrees(0))),
         Target.CropCircleRight: Pose3d(1.75, 2.35, 0, Rotation3d(Rotation2d.fromDegrees(0)))
       },
-      Alliance.Red: {
+      Alliance.RED: {
         Target.StableLeft: Pose3d(8.300, 2.950, 0, Rotation3d(Rotation2d.fromDegrees(180))),
         Target.StableRight: Pose3d(8.300, 6.450, 0, Rotation3d(Rotation2d.fromDegrees(180))),
         Target.HaybineLeft: Pose3d(15.9, 0.80, 0, Rotation3d(Rotation2d.fromDegrees(180))),
@@ -189,11 +189,11 @@ class Game:
 
     # TODO: calculate alliance zone sections (right / left) from field layout
     ZONES: dict[Alliance, dict[Zone, Rectangle2d]] = {
-      Alliance.Blue: {
+      Alliance.BLUE: {
         Zone.AllianceZoneRight: Rectangle2d(Translation2d(0, 0), Translation2d(0, 0)),
         Zone.AllianceZoneLeft: Rectangle2d(Translation2d(0, 0), Translation2d(0, 0))
       },
-      Alliance.Red: {
+      Alliance.RED: {
         Zone.AllianceZoneRight: Rectangle2d(Translation2d(0, 0), Translation2d(0, 0)),
         Zone.AllianceZoneLeft: Rectangle2d(Translation2d(0, 0), Translation2d(0, 0))
       }
