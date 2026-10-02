@@ -12,16 +12,21 @@ from lib.classes import (
   RobotType,
   Alliance, 
   PID,
+  Range,
   State,
   SpeedMode,
   DriveOrientation,
   MotorModel,
+  FeedForwardGains,
   SwerveDriveModuleGearKit,
   SwerveDriveModuleConfigConstants, 
   SwerveDriveModuleConfig, 
   SwerveDriveModuleLocation, 
   PoseAlignmentConstants,
   HeadingAlignmentConstants,
+  RelativePositionControlModuleConfig,
+  VelocityControlModuleConfig,
+  FollowerControlModuleConfig,
   XboxControllerConfig,
   PoseSensorConfig
 )
@@ -93,10 +98,105 @@ class Subsystems:
     DRIFT_CORRECTION = State.ENABLED
 
   class Intake:
-    pass # TODO: implement intake subsystem once designed in CAD
+    # TODO: Configure these values for real
+    ARM_LEADER_CONFIG = RelativePositionControlModuleConfig(
+      id = 10, 
+      controllerType = SparkLowLevel.SparkModel.kSparkMax,
+      motorType = SparkLowLevel.MotorType.kBrushless,
+      currentLimit = 60,
+      isInverted = False,
+      softLimitForward = 50.0,
+      softLimitReverse = 0,
+      controlPID = PID(1.0, 0, 0),
+      outputRange = Range(-1.0, 0.8),
+      feedForwardGains = FeedForwardGains(velocity = 12.0 / lib.constants.Motors.FREE_SPEEDS[MotorModel.NEO]),
+      cruiseVelocity = 12000.0,
+      maxAcceleration = 24000.0,
+      allowedProfileError = 0.5,
+      homingPosition = 0,
+      homingSpeed = 0.5,
+      positionConversionFactor = 1.0,
+      telemetryName = "Robot/Subsystems/Intake/Arm/Leader"
+    )
+
+    # TODO: Configure these values for real
+    ARM_FOLLOWER_CONFIG = FollowerControlModuleConfig(
+      id = 11,
+      leaderId = 10,
+      controllerType = ARM_LEADER_CONFIG.controllerType,
+      motorType = ARM_LEADER_CONFIG.motorType,
+      currentLimit = ARM_LEADER_CONFIG.currentLimit,
+      isInverted = True,
+      telemetryName = "Robot/Subsystems/Intake/Arm/Follower"
+    )
+
+    # TODO: Configure these values for real
+    ROLLERS_TOP_CONFIG = VelocityControlModuleConfig(
+      id = 12,
+      controllerType = SparkLowLevel.SparkModel.kSparkMax,
+      motorType = SparkLowLevel.MotorType.kBrushless,
+      currentLimit = 60,
+      isInverted = False,
+      controlPID = PID(0.0001, 0, 0),
+      outputRange = Range(-1.0, 1.0),
+      feedForwardGains = FeedForwardGains(velocity = 12.0 / lib.constants.Motors.FREE_SPEEDS[MotorModel.NEO_VORTEX]),
+      cruiseVelocity = 6000.0,
+      maxAcceleration = 12000.0,
+      allowedProfileError = 0.1,
+      telemetryName = "Robot/Subsystems/Intake/Rollers/Top"
+    )
+
+    # TODO: Configure these values for real
+    ROLLERS_BOTTOM_CONFIG = VelocityControlModuleConfig(
+      id = 13,
+      controllerType = SparkLowLevel.SparkModel.kSparkMax,
+      motorType = SparkLowLevel.MotorType.kBrushless,
+      currentLimit = 60,
+      isInverted = False,
+      controlPID = PID(0.0001, 0, 0),
+      outputRange = Range(-1.0, 1.0),
+      feedForwardGains = FeedForwardGains(velocity = 12.0 / lib.constants.Motors.FREE_SPEEDS[MotorModel.NEO_VORTEX]),
+      cruiseVelocity = 6000.0,
+      maxAcceleration = 12000.0,
+      allowedProfileError = 0.1,
+      telemetryName = "Robot/Subsystems/Intake/Rollers/Bottom"
+    )
+
+    ARM_INTAKE_POSITION: float = 20.0
+    ROLLERS_INTAKE_SPEED_TOP: units.percent = 1.0
+    ROLLERS_INTAKE_SPEED_BOTTOM: units.percent = 1.0
 
   class Launcher:
-    pass # TODO: implement launcher subsystem once designed in CAD
+    # TODO: Configure these values for real
+    LAUNCHER_LEADER_CONFIG = VelocityControlModuleConfig(
+      id = 14,
+      controllerType = SparkLowLevel.SparkModel.kSparkMax,
+      motorType = SparkLowLevel.MotorType.kBrushless,
+      currentLimit = 60,
+      isInverted = False,
+      controlPID = PID(0.0001, 0, 0),
+      outputRange = Range(-1.0, 1.0),
+      feedForwardGains = FeedForwardGains(velocity = 12.0 / lib.constants.Motors.FREE_SPEEDS[MotorModel.NEO_VORTEX]),
+      cruiseVelocity = 6000.0,
+      maxAcceleration = 12000.0,
+      allowedProfileError = 0.1,
+      telemetryName = "Robot/Subsystems/Launcher/Leader"
+    )     
+
+    # TODO: Configure these values for real
+    LAUNCHER_FOLLOWER_CONFIG = FollowerControlModuleConfig(
+      id = 15,
+      leaderId = 14,
+      controllerType = LAUNCHER_LEADER_CONFIG.controllerType,
+      motorType = LAUNCHER_LEADER_CONFIG.motorType,
+      currentLimit = LAUNCHER_LEADER_CONFIG.currentLimit,
+      isInverted = True,
+      telemetryName = "Robot/Subsystems/Launcher/Follower"
+    )
+
+    # TODO: Configure these values for real
+    LAUNCHER_FORWARD_SOFT_LIMIT = 0
+    LAUNCHER_REVERSE_SOFT_LIMIT = 10
 
 class Services:
   class Localization:
@@ -130,7 +230,7 @@ class Sensors:
       #     Translation3d(x = units.inchesToMeters(-0.5), y = units.inchesToMeters(14.5), z = units.inchesToMeters(18.0)),
       #     Rotation3d(roll = units.degreesToRadians(0), pitch = units.degreesToRadians(-5.5), yaw = units.degreesToRadians(88.0))
       #   ),
-      #   stream = "http://10.28.81.6:1186/?action=stream",
+      #   stream = "http://10.28.81.6:1182/?action=stream",
       #   aprilTagFieldLayout = _aprilTagFieldLayout,
       #   telemetryName = "Robot/Sensors/Pose"
       # ),
@@ -140,7 +240,7 @@ class Sensors:
       #   Translation3d(x = units.inchesToMeters(1.0), y = units.inchesToMeters(-14.0), z = units.inchesToMeters(8.75)),
       #   Rotation3d(roll = units.degreesToRadians(0), pitch = units.degreesToRadians(-17.0), yaw = units.degreesToRadians(-90.0))
       # ),
-      #   stream = "http://10.28.81.7:1184/?action=stream",
+      #   stream = "http://10.28.81.6:1184/?action=stream",
       #   aprilTagFieldLayout = _aprilTagFieldLayout,
       #   telemetryName = "Robot/Sensors/Pose"
       # )
