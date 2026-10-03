@@ -27,10 +27,17 @@ class Intake(Subsystem):
       lambda: self._run(),
       lambda: self.reset()
     )
-
-  # TODO: implement run logic for arm and rollers
+  
   def _run(self) -> None:
-    pass
+    self._extend()
+    self._rollersTop.setSpeed(self._constants.ROLLERS_INTAKE_SPEED_TOP)
+    self._rollersBottom.setSpeed(self._constants.ROLLERS_INTAKE_SPEED_BOTTOM)
+
+  def _extend(self) -> None:
+    self._armLeader.setPosition(self._constants.ARM_INTAKE_POSITION)
+
+  def _retract(self) -> None:
+    self._armLeader.setPosition(0)
 
   def isExtended(self) -> bool:
     return self._armLeader.getPosition() > self._constants.ARM_INTAKE_POSITION * 0.75

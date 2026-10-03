@@ -197,6 +197,7 @@ class Subsystems:
     # TODO: Configure these values for real
     LAUNCHER_FORWARD_SOFT_LIMIT = 0
     LAUNCHER_REVERSE_SOFT_LIMIT = 10
+    LAUNCHER_RESET_SPEED = -0.05
 
 class Services:
   class Localization:

@@ -31,6 +31,18 @@ class Launcher(Subsystem):
 
   # TODO: implement launch command with a check for forward soft limit reached, pauses, and then resets the catapult for next launch
 
+  def run_(self, speed: units.percent) -> Command:
+    return self.startEnd(
+      lambda: self._launch(speed),
+      lambda: self._reload()
+    )
+
+  def _launch(self, speed: units.percent) -> None:
+    self._launcherLeader.setSpeed(speed)
+
+  def _reload(self) -> None:
+    self._launcherLeader.setSpeed(self._constants.LAUNCHER_RESET_SPEED)
+
   def reset(self) -> None:
     self._launcherLeader.reset()
 

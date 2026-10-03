@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING
 from wpilib import RobotBase
+from wpimath import units
 from commands2 import Command, cmd
 from lib import logger, telemetry, utils
 from lib.classes import ControllerRumbleMode, ControllerRumblePattern
@@ -27,6 +28,18 @@ class Game:
     return (
       self._robot.drive.alignToTargetHeading(self._robot.localization.getRobotPose, lambda: self._robot.targeting.getTargetPose(target))
       .withName(f'Game:AlignRobotToTargetHeading:{ target.name }')
+    )
+
+  def runIntake(self) -> Command:
+    return (
+      self._robot.intake.run_()
+      .withName("Game:RunIntake")
+    )
+
+  def launchHay(self, speed: units.percent) -> Command:
+    return (
+      self._robot.launcher.run_(speed)
+      .withName("Game:LaunchHay")
     )
   
   def resetGyro(self) -> Command:
