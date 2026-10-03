@@ -43,7 +43,7 @@ class Subsystems:
     TRACK_WIDTH: units.meters = units.inchesToMeters(20.5)
 
     _drivingMotorModel = MotorModel.NEO
-    _swerveDriveModuleGearKit = SwerveDriveModuleGearKit.HIGH # TODO: confirm actual gearing kit installed with swerve drive
+    _swerveDriveModuleGearKit = SwerveDriveModuleGearKit.HIGH
     _swerveDriveModuleConstants = SwerveDriveModuleConfigConstants(
       drivingControllerType = SparkLowLevel.SparkModel.kSparkMax,
       drivingMotorType = SparkLowLevel.MotorType.kBrushless,
@@ -195,8 +195,8 @@ class Subsystems:
     )
 
     # TODO: Configure these values for real
-    LAUNCHER_FORWARD_SOFT_LIMIT = 0
-    LAUNCHER_REVERSE_SOFT_LIMIT = 10
+    LAUNCHER_FORWARD_SOFT_LIMIT = 10
+    LAUNCHER_REVERSE_SOFT_LIMIT = 0
     LAUNCHER_RESET_SPEED = -0.05
 
 class Services:
@@ -220,7 +220,7 @@ class Services:
 
 class Sensors: 
   class Gyro:
-    NAVX_PORT = navx.AHRS.NavXComType.kUSB1 # TODO: select correct com type based on gyro installation
+    NAVX_PORT = navx.AHRS.NavXComType.kMXP_SPI
 
   # TODO: calculate correct camera transforms once installed on robot chassis
   class Pose:
@@ -231,7 +231,7 @@ class Sensors:
       #     Translation3d(x = units.inchesToMeters(-0.5), y = units.inchesToMeters(14.5), z = units.inchesToMeters(18.0)),
       #     Rotation3d(roll = units.degreesToRadians(0), pitch = units.degreesToRadians(-5.5), yaw = units.degreesToRadians(88.0))
       #   ),
-      #   stream = "http://10.28.81.6:1182/?action=stream",
+      #   stream = "http://10.18.82.6:1182/?action=stream",
       #   aprilTagFieldLayout = _aprilTagFieldLayout,
       #   telemetryName = "Robot/Sensors/Pose"
       # ),
@@ -241,14 +241,14 @@ class Sensors:
       #   Translation3d(x = units.inchesToMeters(1.0), y = units.inchesToMeters(-14.0), z = units.inchesToMeters(8.75)),
       #   Rotation3d(roll = units.degreesToRadians(0), pitch = units.degreesToRadians(-17.0), yaw = units.degreesToRadians(-90.0))
       # ),
-      #   stream = "http://10.28.81.6:1184/?action=stream",
+      #   stream = "http://10.18.82.6:1184/?action=stream",
       #   aprilTagFieldLayout = _aprilTagFieldLayout,
       #   telemetryName = "Robot/Sensors/Pose"
       # )
     )
 
 class Cameras:
-  DRIVER_STREAM = "http://10.28.81.6:1182/?action=stream"
+  DRIVER_STREAM = "http://10.18.82.6:1182/?action=stream"
 
 class Controllers:
   DRIVER_CONTROLLER_CONFIG = XboxControllerConfig(port = 0, inputDeadband = 0.1, telemetryName = "Robot/Controllers/Driver")
