@@ -33,12 +33,16 @@ class Game:
   def runIntake(self) -> Command:
     return (
       self._robot.intake.run_()
+      .onlyIf(lambda: self._robot.launcher.isReset())
+      # .until(lambda: "intake has hay on board based on sensor trigger")
       .withName("Game:RunIntake")
     )
 
-  def launchHay(self, speed: units.percent) -> Command:
+  def scoreHay(self, target: Target) -> Command:
     return (
-      self._robot.launcher.run_(speed)
+      self.alignRobotToTargetHeading(target).until(lambda: self._robot.drive.isAlignedToTargetHeading())
+      .andThen(self._robot.launcher.launch(self._robot.targeting.getScoringTargetInfo(target).speed))
+      .andThen(self.rumbleControllers(ControllerRumbleMode.BOTH))
       .withName("Game:LaunchHay")
     )
   

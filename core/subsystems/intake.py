@@ -1,9 +1,9 @@
 from wpimath import units
 from commands2 import Subsystem, Command
 from lib import logger, telemetry, utils
-from lib.components.relative_position_control_module import RelativePositionControlModule
-from lib.components.velocity_control_module import VelocityControlModule
-from lib.components.follower_control_module import FollowerControlModule
+from lib.modules.relative_position_control import RelativePositionControlModule
+from lib.modules.velocity_control import VelocityControlModule
+from lib.modules.follower_control import FollowerControlModule
 import core.constants as constants
 
 # TODO: implement intake subsystem once designed in CAD

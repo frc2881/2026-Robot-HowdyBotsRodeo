@@ -22,6 +22,12 @@ class LaunchMetric:
   distance: units.meters
   speed: units.percent
 
+@dataclass(frozen=False, slots=True)
+class TargetInfo:
+  distance: units.meters = 0
+  speed: units.percent = 0
+  heading: units.degrees = 0
+
 class MatchState(Enum):
   STOPPED = auto()
   AUTO = auto()

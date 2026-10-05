@@ -79,7 +79,7 @@ class Subsystems:
 
     TARGET_HEADING_ALIGNMENT_CONSTANTS = HeadingAlignmentConstants(
       rotationControlPID = PID(0.01, 0, 0), 
-      rotationPositionTolerance = 1.0
+      rotationPositionTolerance = 5.0
     )
 
     DRIFT_CORRECTION_CONSTANTS = HeadingAlignmentConstants(
@@ -138,8 +138,7 @@ class Subsystems:
       currentLimit = 60,
       isInverted = False,
       controlPID = PID(0.0001, 0, 0),
-      outputRange = Range(-1.0, 1.0),
-      feedForwardGains = FeedForwardGains(velocity = 12.0 / lib.constants.Motors.FREE_SPEEDS[MotorModel.NEO_VORTEX]),
+      feedForwardGains = FeedForwardGains(velocity = 12.0 / lib.constants.Motors.FREE_SPEEDS[MotorModel.NEO]),
       cruiseVelocity = 6000.0,
       maxAcceleration = 12000.0,
       allowedProfileError = 0.1,
@@ -154,8 +153,7 @@ class Subsystems:
       currentLimit = 60,
       isInverted = False,
       controlPID = PID(0.0001, 0, 0),
-      outputRange = Range(-1.0, 1.0),
-      feedForwardGains = FeedForwardGains(velocity = 12.0 / lib.constants.Motors.FREE_SPEEDS[MotorModel.NEO_VORTEX]),
+      feedForwardGains = FeedForwardGains(velocity = 12.0 / lib.constants.Motors.FREE_SPEEDS[MotorModel.NEO]),
       cruiseVelocity = 6000.0,
       maxAcceleration = 12000.0,
       allowedProfileError = 0.1,
@@ -175,8 +173,7 @@ class Subsystems:
       currentLimit = 60,
       isInverted = False,
       controlPID = PID(0.0001, 0, 0),
-      outputRange = Range(-1.0, 1.0),
-      feedForwardGains = FeedForwardGains(velocity = 12.0 / lib.constants.Motors.FREE_SPEEDS[MotorModel.NEO_VORTEX]),
+      feedForwardGains = FeedForwardGains(velocity = 12.0 / lib.constants.Motors.FREE_SPEEDS[MotorModel.NEO]),
       cruiseVelocity = 6000.0,
       maxAcceleration = 12000.0,
       allowedProfileError = 0.1,
@@ -195,9 +192,10 @@ class Subsystems:
     )
 
     # TODO: Configure these values for real
-    LAUNCHER_FORWARD_SOFT_LIMIT = 10
-    LAUNCHER_REVERSE_SOFT_LIMIT = 0
-    LAUNCHER_RESET_SPEED = -0.05
+    FORWARD_SOFT_LIMIT = 10
+    REVERSE_SOFT_LIMIT = 0
+    RESET_SPEED = -0.25
+    HOLD_SPEED = -0.01
 
 class Services:
   class Localization:
@@ -214,8 +212,13 @@ class Services:
   # TODO: calculate all launch metrics with physical testing on robot once available
   class Targeting:
     LAUNCH_METRICS: tuple[LaunchMetric, ...] = (
+      LaunchMetric(distance = 1.0, speed = 0.15),
       LaunchMetric(distance = 2.0, speed = 0.25),
-      LaunchMetric(distance = 3.0, speed = 0.35)
+      LaunchMetric(distance = 3.0, speed = 0.40),
+      LaunchMetric(distance = 4.0, speed = 0.55),
+      LaunchMetric(distance = 5.0, speed = 0.70),
+      LaunchMetric(distance = 6.0, speed = 0.85),
+      LaunchMetric(distance = 7.0, speed = 1.00)
     )
 
 class Sensors: 

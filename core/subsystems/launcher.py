@@ -2,11 +2,10 @@ from wpimath import units
 from commands2 import Subsystem, Command
 from rev import SparkBaseConfig
 from lib import logger, telemetry, utils
-from lib.components.velocity_control_module import VelocityControlModule
-from lib.components.follower_control_module import FollowerControlModule
+from lib.modules.velocity_control import VelocityControlModule
+from lib.modules.follower_control import FollowerControlModule
 import core.constants as constants
 
-# TODO: implement launcher subsystem once designed in CAD
 class Launcher(Subsystem):
   def __init__(self) -> None:
     super().__init__()
@@ -19,29 +18,25 @@ class Launcher(Subsystem):
 
     sparkConfig = SparkBaseConfig()
     (sparkConfig.softLimit
-      .reverseSoftLimitEnabled(True)
-      .reverseSoftLimit(0)
+      .forwardSoftLimit(self._constants.FORWARD_SOFT_LIMIT)
       .forwardSoftLimitEnabled(True)
-      .forwardSoftLimit(10)
+      .reverseSoftLimit(self._constants.REVERSE_SOFT_LIMIT)
+      .reverseSoftLimitEnabled(True)
     )
     utils.configureSparkController(self._launcherLeader._controller, sparkConfig, isPersisted = True)
 
   def periodic(self) -> None:
     self._updateTelemetry()
 
-  # TODO: implement launch command with a check for forward soft limit reached, pauses, and then resets the catapult for next launch
-
-  def run_(self, speed: units.percent) -> Command:
-    return self.startEnd(
-      lambda: self._launch(speed),
-      lambda: self._reload()
+  def launch(self, speed: units.percent) -> Command:
+    return (
+      self.run(lambda: self._launcherLeader.setSpeed(speed)).until(lambda: self._launcherLeader._controller.getForwardSoftLimit().isReached())
+      .andThen(self.run(lambda: self._launcherLeader.setSpeed(self._constants.RESET_SPEED)).until(lambda: self.isReset()))
+      .finallyDo(lambda end: self._launcherLeader.setSpeed(self._constants.HOLD_SPEED))
     )
 
-  def _launch(self, speed: units.percent) -> None:
-    self._launcherLeader.setSpeed(speed)
-
-  def _reload(self) -> None:
-    self._launcherLeader.setSpeed(self._constants.LAUNCHER_RESET_SPEED)
+  def isReset(self) -> bool:
+    return self._launcherLeader._encoder.getPosition() <= self._constants.REVERSE_SOFT_LIMIT
 
   def reset(self) -> None:
     self._launcherLeader.reset()
