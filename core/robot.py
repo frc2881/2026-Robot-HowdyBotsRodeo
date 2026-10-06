@@ -4,6 +4,7 @@ from lib import logger, telemetry, utils
 from lib.controllers.xbox import XboxController
 from lib.sensors.gyro_navx2 import Gyro
 from lib.sensors.pose import PoseSensor
+from lib.sensors.binary import BinarySensor
 from core.commands.auto import Auto
 from core.commands.game import Game
 from core.subsystems.drive import Drive
@@ -29,11 +30,12 @@ class RobotCore:
   def _initSensors(self) -> None:
     self.gyro = Gyro(constants.Sensors.Gyro.NAVX_PORT)
     self.poseSensors = tuple(PoseSensor(c) for c in constants.Sensors.Pose.POSE_SENSOR_CONFIGS)
+    self.launcherSensor = BinarySensor(constants.Sensors.Proximity.LAUNCHER_SENSOR_CONFIG)
 
   def _initSubsystems(self) -> None:
     self.drive = Drive(lambda: self.gyro.getHeading())
     self.intake = Intake()
-    self.launcher = Launcher()
+    self.launcher = Launcher(lambda: self.launcherSensor.hasTarget())
     
   def _initServices(self) -> None:
     self.localization = Localization(lambda: self.gyro.getHeading(), lambda: self.drive.getModulePositions(), self.poseSensors)
@@ -58,9 +60,9 @@ class RobotCore:
     self.drive.setDefaultCommand(self.drive.drive(self.driver.getLeftY, self.driver.getLeftX, self.driver.getRightX))
     self.driver.leftStick().whileTrue(self.drive.lockSwerveModules())
     # self.driver.rightStick().whileTrue(cmd.none())
-    self.driver.leftTrigger().whileTrue(self.game.scoreHay(Target.STABLE_LEFT))
-    self.driver.rightTrigger().whileTrue(self.game.scoreHay(Target.STABLE_RIGHT))
-    # self.driver.leftBumper().whileTrue(cmd.none())
+    self.driver.leftTrigger().whileTrue(self.game.scoreHayFromLauncher(Target.STABLE_LEFT))
+    self.driver.rightTrigger().whileTrue(self.game.scoreHayFromLauncher(Target.STABLE_RIGHT))
+    self.driver.leftBumper().whileTrue(self.game.loadHayIntoLauncher())
     # self.driver.rightBumper().whileTrue(cmd.none())
     # self.driver.a().whileTrue(cmd.none())
     # self.driver.b().whileTrue(cmd.none())
@@ -68,17 +70,20 @@ class RobotCore:
     # self.driver.x().whileTrue(cmd.none())
     # self.driver.povLeft().whileTrue(cmd.none())
     # self.driver.povRight().whileTrue(cmd.none())
-    # self.driver.povUp().whileTrue(cmd.none())
+    self.driver.povUp().whileTrue(self.launcher.launch(SmartDashboard.getNumber("Robot/Launcher/Speed", 0)))
     # self.driver.povDown().whileTrue(cmd.none())
     # self.driver.start().whileTrue(cmd.none())
     self.driver.back().debounce(0.5).whileTrue(self.game.resetGyro())
+
+    # TODO: for initial launcher mechanism testing and launch metrics calculations - remove value and controller action before comp
+    SmartDashboard.putNumber("Robot/Launcher/Speed", 0)
 
   # TODO: implement operator commands for robot functions (intake, launcher, homing if needed)
   def _setupOperator(self) -> None:
     # self.operator.leftStick().whileTrue(cmd.none())
     # self.operator.rightStick().whileTrue(cmd.none())
-    self.operator.leftTrigger().whileTrue(self.game.runIntake())
-    self.operator.rightTrigger().whileTrue(self.launcher.launch(SmartDashboard.getNumber("Robot/Launcher/Speed", 0)))
+    self.operator.leftTrigger().whileTrue(self.game.loadHayIntoLauncher())
+    # self.operator.rightTrigger().whileTrue(cmd.none())
     # self.operator.leftBumper().whileTrue(cmd.none())
     # self.operator.rightBumper().whileTrue(cmd.none())
     # self.operator.a().whileTrue(cmd.none())
@@ -91,9 +96,6 @@ class RobotCore:
     self.operator.povDown().debounce(0.5).whileTrue(self.intake.resetToHome())
     # self.operator.start().whileTrue(cmd.none())
     # self.operator.back().whileTrue(cmd.none())
-    
-    # TODO: for initial launcher mechanism testing and launch metrics calculations - remove value and controller action before comp
-    SmartDashboard.putNumber("Robot/Launcher/Speed", 0)
 
   def _initTelemetry(self) -> None:
     telemetry.log("Game/Robot/Type", constants.Game.Robot.TYPE.name)

@@ -1,4 +1,3 @@
-from wpimath import units
 from commands2 import Subsystem, Command
 from lib import logger, telemetry, utils
 from lib.modules.relative_position_control import RelativePositionControlModule
@@ -6,7 +5,6 @@ from lib.modules.velocity_control import VelocityControlModule
 from lib.modules.follower_control import FollowerControlModule
 import core.constants as constants
 
-# TODO: implement intake subsystem once designed in CAD
 class Intake(Subsystem):
   def __init__(self) -> None:
     super().__init__()

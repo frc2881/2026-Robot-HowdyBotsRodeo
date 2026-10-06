@@ -1,3 +1,4 @@
+from typing import Callable
 from wpimath import units
 from commands2 import Subsystem, Command
 from lib import logger, telemetry, utils
@@ -6,9 +7,13 @@ from lib.modules.follower_control import FollowerControlModule
 import core.constants as constants
 
 class Launcher(Subsystem):
-  def __init__(self) -> None:
+  def __init__(
+      self,
+      getLauncherSensorHasTarget: Callable[[], bool]
+    ) -> None:
     super().__init__()
     self._constants = constants.Subsystems.Launcher
+    self._getLauncherSensorHasTarget = getLauncherSensorHasTarget
 
     self._telemetryName = "Robot/Subsystems/Launcher"
 
@@ -20,6 +25,9 @@ class Launcher(Subsystem):
 
   def launch(self, speed: units.percent) -> Command:
     return self._launcherLeader.launch(speed, self)
+
+  def isReady(self) -> bool:
+    return self._getLauncherSensorHasTarget()
 
   def isReset(self) -> bool:
     return self._launcherLeader.isReset()

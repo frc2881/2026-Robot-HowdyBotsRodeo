@@ -29,7 +29,8 @@ from lib.classes import (
   FollowerControlModuleConfig,
   CatapultModuleConfig,
   XboxControllerConfig,
-  PoseSensorConfig
+  PoseSensorConfig,
+  BinarySensorConfig
 )
 from core.classes import Target, Zone, LaunchMetric
 import lib.constants
@@ -247,6 +248,12 @@ class Sensors:
       #   aprilTagFieldLayout = _aprilTagFieldLayout,
       #   telemetryName = "Robot/Sensors/Pose"
       # )
+    )
+
+  class Proximity:
+    LAUNCHER_SENSOR_CONFIG = BinarySensorConfig( 
+      channel = 1,
+      telemetryName = "Robot/Sensors/Launcher"
     )
 
 class Cameras:

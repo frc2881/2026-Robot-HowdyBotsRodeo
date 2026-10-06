@@ -30,20 +30,22 @@ class Game:
       .withName(f'Game:AlignRobotToTargetHeading:{ target.name }')
     )
 
-  def runIntake(self) -> Command:
+  def loadHayIntoLauncher(self) -> Command:
     return (
       self._robot.intake.run_()
+      .andThen(self.rumbleControllers(ControllerRumbleMode.BOTH))
       .onlyIf(lambda: self._robot.launcher.isReset())
-      # .until(lambda: "launcher has hay ready for launch based on sensor state")
-      .withName("Game:RunIntake")
+      .until(lambda: self._robot.launcher.isReady())
+      .withName("Game:LoadHayIntoLauncher")
     )
 
-  def scoreHay(self, target: Target) -> Command:
+  def scoreHayFromLauncher(self, target: Target) -> Command:
     return (
       self.alignRobotToTargetHeading(target).until(lambda: self._robot.drive.isAlignedToTargetHeading())
       .andThen(self._robot.launcher.launch(self._robot.targeting.getScoringTargetInfo(target).speed))
       .andThen(self.rumbleControllers(ControllerRumbleMode.BOTH))
-      .withName("Game:LaunchHay")
+      .onlyIf(lambda: self._robot.launcher.isReady())
+      .withName("Game:ScoreHayFromLauncher")
     )
   
   def resetGyro(self) -> Command:
