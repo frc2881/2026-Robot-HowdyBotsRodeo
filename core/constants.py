@@ -27,6 +27,7 @@ from lib.classes import (
   RelativePositionControlModuleConfig,
   VelocityControlModuleConfig,
   FollowerControlModuleConfig,
+  CatapultModuleConfig,
   XboxControllerConfig,
   PoseSensorConfig
 )
@@ -166,7 +167,7 @@ class Subsystems:
 
   class Launcher:
     # TODO: Configure these values for real
-    LAUNCHER_LEADER_CONFIG = VelocityControlModuleConfig(
+    LAUNCHER_LEADER_CONFIG = CatapultModuleConfig(
       id = 14,
       controllerType = SparkLowLevel.SparkModel.kSparkMax,
       motorType = SparkLowLevel.MotorType.kBrushless,
@@ -177,6 +178,10 @@ class Subsystems:
       cruiseVelocity = 6000.0,
       maxAcceleration = 12000.0,
       allowedProfileError = 0.1,
+      homingSpeed = 0.1,
+      resetSpeed = 0.25,
+      holdSpeed = 0.01,
+      launchPosition = 5,
       telemetryName = "Robot/Subsystems/Launcher/Leader"
     )     
 
@@ -190,12 +195,6 @@ class Subsystems:
       isInverted = True,
       telemetryName = "Robot/Subsystems/Launcher/Follower"
     )
-
-    # TODO: Configure these values for real
-    FORWARD_SOFT_LIMIT = 10
-    REVERSE_SOFT_LIMIT = 0
-    RESET_SPEED = -0.25
-    HOLD_SPEED = -0.01
 
 class Services:
   class Localization:

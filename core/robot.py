@@ -1,4 +1,4 @@
-from wpilib import DriverStation
+from wpilib import DriverStation, SmartDashboard
 from commands2 import cmd
 from lib import logger, telemetry, utils
 from lib.controllers.xbox import XboxController
@@ -78,7 +78,7 @@ class RobotCore:
     # self.operator.leftStick().whileTrue(cmd.none())
     # self.operator.rightStick().whileTrue(cmd.none())
     self.operator.leftTrigger().whileTrue(self.game.runIntake())
-    # self.operator.rightTrigger().whileTrue(cmd.none())
+    self.operator.rightTrigger().whileTrue(self.launcher.launch(SmartDashboard.getNumber("Robot/Launcher/Speed", 0)))
     # self.operator.leftBumper().whileTrue(cmd.none())
     # self.operator.rightBumper().whileTrue(cmd.none())
     # self.operator.a().whileTrue(cmd.none())
@@ -87,11 +87,13 @@ class RobotCore:
     # self.operator.x().whileTrue(cmd.none())
     # self.operator.povLeft().whileTrue(cmd.none())
     # self.operator.povRight().whileTrue(cmd.none())
-    # self.operator.povUp().whileTrue(cmd.none())
-    # self.operator.povDown().whileTrue(cmd.none())
+    self.operator.povUp().debounce(0.5).whileTrue(self.launcher.resetToHome())
+    self.operator.povDown().debounce(0.5).whileTrue(self.intake.resetToHome())
     # self.operator.start().whileTrue(cmd.none())
     # self.operator.back().whileTrue(cmd.none())
-    pass
+    
+    # TODO: for initial launcher mechanism testing and launch metrics calculations - remove value and controller action before comp
+    SmartDashboard.putNumber("Robot/Launcher/Speed", 0)
 
   def _initTelemetry(self) -> None:
     telemetry.log("Game/Robot/Type", constants.Game.Robot.TYPE.name)
@@ -125,10 +127,10 @@ class RobotCore:
     self.drive.reset()
 
   def isHoming(self) -> bool:
-    return False
+    return self.intake.isHoming() or self.launcher.isHoming()
 
   def isHomed(self) -> bool:
-    return True
+    return self.intake.isHomed() and self.launcher.isHomed()
 
   def _updateTelemetry(self) -> None:
     telemetry.log("Robot/Status/IsHoming", self.isHoming())

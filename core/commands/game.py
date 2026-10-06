@@ -34,7 +34,7 @@ class Game:
     return (
       self._robot.intake.run_()
       .onlyIf(lambda: self._robot.launcher.isReset())
-      # .until(lambda: "intake has hay on board based on sensor trigger")
+      # .until(lambda: "launcher has hay ready for launch based on sensor state")
       .withName("Game:RunIntake")
     )
 
