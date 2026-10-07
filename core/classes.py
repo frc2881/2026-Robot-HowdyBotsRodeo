@@ -3,6 +3,12 @@ from dataclasses import dataclass
 from wpimath import units
 
 class AutoPath(Enum):
+  RIGHT_PICKUP_1 = auto()
+  RIGHT_PICKUP_2 = auto()
+  RIGHT_PICKUP_3 = auto()
+  LEFT_PICKUP_1 = auto()
+  LEFT_PICKUP_2 = auto()
+  LEFT_PICKUP_3 = auto()
   CUSTOM = auto()
 
 class Target(Enum):

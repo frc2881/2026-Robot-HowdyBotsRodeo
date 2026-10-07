@@ -186,7 +186,7 @@ class Subsystems:
       holdSpeed = 0.01,
       launchPosition = 5,
       telemetryName = "Robot/Subsystems/Launcher/Leader"
-    )     
+    )
 
     # TODO: Configure these values for real
     LAUNCHER_FOLLOWER_CONFIG = FollowerControlModuleConfig(
@@ -286,16 +286,16 @@ class Game:
         Target.STABLE_RIGHT: Pose3d(8.3, 1.65, 0, Rotation3d(Rotation2d.fromDegrees(0))),
         Target.HAYBINE_LEFT: Pose3d(0.6, 7.2, 0, Rotation3d(Rotation2d.fromDegrees(0))),
         Target.HAYBINE_RIGHT: Pose3d(0.6, 0.8, 0, Rotation3d(Rotation2d.fromDegrees(0))),
-        Target.CROP_CIRCLE_LEFT: Pose3d(1.75, 5.7, 0, Rotation3d(Rotation2d.fromDegrees(0))),
-        Target.CROP_CIRCLE_RIGHT: Pose3d(1.75, 2.35, 0, Rotation3d(Rotation2d.fromDegrees(0)))
+        Target.CROP_CIRCLE_LEFT: Pose3d(1.75, 5.7, 0, Rotation3d(Rotation2d.fromDegrees(-5.0))),
+        Target.CROP_CIRCLE_RIGHT: Pose3d(1.75, 2.35, 0, Rotation3d(Rotation2d.fromDegrees(-6.5)))
       },
       Alliance.RED: {
         Target.STABLE_LEFT: Pose3d(8.300, 2.950, 0, Rotation3d(Rotation2d.fromDegrees(180))),
         Target.STABLE_RIGHT: Pose3d(8.300, 6.450, 0, Rotation3d(Rotation2d.fromDegrees(180))),
         Target.HAYBINE_LEFT: Pose3d(15.9, 0.80, 0, Rotation3d(Rotation2d.fromDegrees(180))),
         Target.HAYBINE_RIGHT: Pose3d(15.9, 7.20, 0, Rotation3d(Rotation2d.fromDegrees(180))),
-        Target.CROP_CIRCLE_LEFT: Pose3d(14.800, 2.350, 0, Rotation3d(Rotation2d.fromDegrees(180))),
-        Target.CROP_CIRCLE_RIGHT: Pose3d(14.800, 5.700, 0, Rotation3d(Rotation2d.fromDegrees(180)))
+        Target.CROP_CIRCLE_LEFT: Pose3d(14.800, 2.350, 0, Rotation3d(Rotation2d.fromDegrees(175.0))),
+        Target.CROP_CIRCLE_RIGHT: Pose3d(14.800, 5.700, 0, Rotation3d(Rotation2d.fromDegrees(173.5)))
       }
     }
 
