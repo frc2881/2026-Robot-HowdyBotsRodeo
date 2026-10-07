@@ -162,9 +162,11 @@ class Subsystems:
       telemetryName = "Robot/Subsystems/Intake/Rollers/Bottom"
     )
 
-    ARM_INTAKE_POSITION: float = 20.0
-    ROLLERS_INTAKE_SPEED_TOP: units.percent = 1.0
-    ROLLERS_INTAKE_SPEED_BOTTOM: units.percent = 1.0
+    ARM_INTAKE_POSITION: float = 20.0 # TODO: test/calculate
+    ROLLERS_TOP_INTAKE_SPEED: units.percent = 1.0 # TODO: test/calculate
+    ROLLERS_BOTTOM_INTAKE_SPEED: units.percent = 1.0 # TODO: test/calculate
+    ROLLERS_TOP_HOLD_SPEED: units.percent = 0.25 # TODO: test/calculate
+    ROLLERS_BOTTOM_HOLD_SPEED: units.percent = 0 # TODO: test/calculate
 
   class Launcher:
     # TODO: Configure these values for real

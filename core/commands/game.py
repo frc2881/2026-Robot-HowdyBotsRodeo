@@ -47,6 +47,12 @@ class Game:
       .onlyIf(lambda: self._robot.launcher.isReady())
       .withName("Game:ScoreHayFromLauncher")
     )
+
+  def holdHayForBale(self) -> Command:
+    return (
+      self._robot.intake.hold()
+      .withName("Game:HoldHayForBale")
+    )
   
   def resetGyro(self) -> Command:
     return (
