@@ -1,4 +1,5 @@
 from commands2 import Subsystem, Command
+from wpimath.filter import Debouncer
 from lib import logger, telemetry, utils
 from lib.modules.relative_position_control import RelativePositionControlModule
 from lib.modules.velocity_control import VelocityControlModule
@@ -17,7 +18,11 @@ class Intake(Subsystem):
     self._rollersTop = VelocityControlModule(self._constants.ROLLERS_TOP_CONFIG)
     self._rollersBottom = VelocityControlModule(self._constants.ROLLERS_BOTTOM_CONFIG)
 
+    self._rollersTopCurrentFilter = Debouncer(0.5, Debouncer.DebounceType.kRising)
+    self._isHolding: bool = False
+
   def periodic(self) -> None:
+    self._isHolding = self._rollersTopCurrentFilter.calculate(self._rollersTop.getOutputCurrent() >= self._constants.ROLLERS_TOP_HOLDING_CURRENT)
     self._updateTelemetry()
 
   def run_(self) -> Command:
@@ -54,6 +59,9 @@ class Intake(Subsystem):
   def isRunning(self) -> bool:
     return self._rollersTop.getSpeed() > 0.1
 
+  def isHolding(self) -> bool:
+    return self._isHolding
+
   def resetToHome(self) -> Command:
     return self._armLeader.resetToHome(self).withName("Intake:ResetToHome")
 
@@ -71,3 +79,4 @@ class Intake(Subsystem):
   def _updateTelemetry(self) -> None:
     telemetry.log(f'{self._telemetryName}/IsExtended', self.isExtended())
     telemetry.log(f'{self._telemetryName}/IsRunning', self.isRunning())
+    telemetry.log(f'{self._telemetryName}/IsHolding', self.isHolding())

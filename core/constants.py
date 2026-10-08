@@ -168,6 +168,8 @@ class Subsystems:
     ROLLERS_TOP_HOLD_SPEED: units.percent = 0.25 # TODO: test/calculate
     ROLLERS_BOTTOM_HOLD_SPEED: units.percent = 0 # TODO: test/calculate
 
+    ROLLERS_TOP_HOLDING_CURRENT: units.amperes = 40 #TODO: test/calculate
+
   class Launcher:
     # TODO: Configure these values for real
     LAUNCHER_LEADER_CONFIG = CatapultModuleConfig(
