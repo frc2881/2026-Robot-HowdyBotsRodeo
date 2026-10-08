@@ -30,7 +30,8 @@ from lib.classes import (
   CatapultModuleConfig,
   XboxControllerConfig,
   PoseSensorConfig,
-  BinarySensorConfig
+  BinarySensorConfig,
+  CurrentSensorConfig
 )
 from core.classes import Target, Zone, LaunchMetric
 import lib.constants
@@ -168,7 +169,11 @@ class Subsystems:
     ROLLERS_TOP_HOLD_SPEED: units.percent = 0.25 # TODO: test/calculate
     ROLLERS_BOTTOM_HOLD_SPEED: units.percent = 0 # TODO: test/calculate
 
-    ROLLERS_TOP_HOLDING_CURRENT: units.amperes = 40 #TODO: test/calculate
+    ROLLERS_TOP_CURRENT_SENSOR_CONFIG = CurrentSensorConfig(
+      targetCurrent = 40, #TODO: test/calculate
+      changeTime = 0.5, #TODO: test/calculate
+      telemetryName = "Robot/Sensors/Current/Intake/Rollers/Top"
+    )
 
   class Launcher:
     # TODO: Configure these values for real
@@ -257,7 +262,7 @@ class Sensors:
   class Proximity:
     LAUNCHER_SENSOR_CONFIG = BinarySensorConfig( 
       channel = 1,
-      telemetryName = "Robot/Sensors/Launcher"
+      telemetryName = "Robot/Sensors/Proximity/Launcher"
     )
 
 class Cameras:
