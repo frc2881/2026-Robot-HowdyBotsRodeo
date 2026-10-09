@@ -31,7 +31,8 @@ from lib.classes import (
   XboxControllerConfig,
   PoseSensorConfig,
   BinarySensorConfig,
-  CurrentSensorConfig
+  CurrentSensorConfig,
+  ButtonControllerConfig
 )
 from core.classes import Target, Zone, LaunchMetric
 import lib.constants
@@ -230,6 +231,10 @@ class Services:
       LaunchMetric(distance = 7.0, speed = 1.00)
     )
 
+  class Lights:
+    LED_CHANNEL: int = 0
+    LED_LENGTH: int = 8
+
 class Sensors: 
   class Gyro:
     NAVX_PORT = navx.AHRS.NavXComType.kMXP_SPI
@@ -237,26 +242,26 @@ class Sensors:
   # TODO: calculate correct camera transforms once installed on robot chassis
   class Pose:
     POSE_SENSOR_CONFIGS: tuple[PoseSensorConfig, ...] = (
-      # PoseSensorConfig(
-      #   cameraName = "FrontLeft", 
-      #   transform = Transform3d(
-      #     Translation3d(x = units.inchesToMeters(-0.5), y = units.inchesToMeters(14.5), z = units.inchesToMeters(18.0)),
-      #     Rotation3d(roll = units.degreesToRadians(0), pitch = units.degreesToRadians(-5.5), yaw = units.degreesToRadians(88.0))
-      #   ),
-      #   stream = "http://10.18.82.6:1182/?action=stream",
-      #   aprilTagFieldLayout = _aprilTagFieldLayout,
-      #   telemetryName = "Robot/Sensors/Pose"
-      # ),
-      # PoseSensorConfig(
-      #   cameraName = "FrontRight",
-      #   transform = Transform3d(
-      #   Translation3d(x = units.inchesToMeters(1.0), y = units.inchesToMeters(-14.0), z = units.inchesToMeters(8.75)),
-      #   Rotation3d(roll = units.degreesToRadians(0), pitch = units.degreesToRadians(-17.0), yaw = units.degreesToRadians(-90.0))
-      # ),
-      #   stream = "http://10.18.82.6:1184/?action=stream",
-      #   aprilTagFieldLayout = _aprilTagFieldLayout,
-      #   telemetryName = "Robot/Sensors/Pose"
-      # )
+      PoseSensorConfig(
+        cameraName = "FrontLeft", 
+        transform = Transform3d(
+          Translation3d(x = units.inchesToMeters(8.0), y = units.inchesToMeters(2.5), z = units.inchesToMeters(10.0)),
+          Rotation3d(roll = units.degreesToRadians(0), pitch = units.degreesToRadians(-20.0), yaw = units.degreesToRadians(10.0))
+        ),
+        stream = "http://10.18.82.6:1182/?action=stream",
+        aprilTagFieldLayout = _aprilTagFieldLayout,
+        telemetryName = "Robot/Sensors/Pose"
+      ),
+      PoseSensorConfig(
+        cameraName = "FrontRight",
+        transform = Transform3d(
+        Translation3d(x = units.inchesToMeters(8.0), y = units.inchesToMeters(-2.5), z = units.inchesToMeters(10.0)),
+        Rotation3d(roll = units.degreesToRadians(0), pitch = units.degreesToRadians(-20.0), yaw = units.degreesToRadians(-10.0))
+      ),
+        stream = "http://10.18.82.6:1184/?action=stream",
+        aprilTagFieldLayout = _aprilTagFieldLayout,
+        telemetryName = "Robot/Sensors/Pose"
+      )
     )
 
   class Proximity:
@@ -271,7 +276,7 @@ class Cameras:
 class Controllers:
   DRIVER_CONTROLLER_CONFIG = XboxControllerConfig(port = 0, inputDeadband = 0.1, telemetryName = "Robot/Controllers/Driver")
   OPERATOR_CONTROLLER_CONFIG = XboxControllerConfig(port = 1, inputDeadband = 0.1, telemetryName = "Robot/Controllers/Operator")
-  INPUT_DEADBAND: units.percent = 0.1
+  HOMING_BUTTON_CONFIG = ButtonControllerConfig(channel = 0, telemetryName = "Robot/Controllers/Homing")
 
 class Game:
   class Robot:

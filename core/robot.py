@@ -1,7 +1,9 @@
 from wpilib import DriverStation, SmartDashboard
 from commands2 import cmd
 from lib import logger, telemetry, utils
+from lib.classes import RobotState
 from lib.controllers.xbox import XboxController
+from lib.controllers.button import ButtonController
 from lib.sensors.gyro_navx2 import Gyro
 from lib.sensors.pose import PoseSensor
 from lib.sensors.binary import BinarySensor
@@ -13,6 +15,7 @@ from core.subsystems.launcher import Launcher
 from core.services.localization import Localization
 from core.services.targeting import Targeting
 from core.services.match import Match
+from core.services.lights import Lights
 from core.classes import Target
 import core.constants as constants
 
@@ -41,6 +44,11 @@ class RobotCore:
     self.localization = Localization(lambda: self.gyro.getHeading(), lambda: self.drive.getModulePositions(), self.poseSensors)
     self.targeting = Targeting(lambda: self.localization.getRobotPose(), lambda: self.localization.getRobotZone(), lambda: self.drive.getChassisSpeeds())
     self.match = Match()
+    self.lights = Lights(
+      lambda: self.isHoming(), 
+      lambda: self.isHomed(), 
+      lambda: self.localization.hasValidPoseSensorResult()
+    )
 
   def _initCommands(self) -> None:
     self.game = Game(self)
@@ -50,10 +58,21 @@ class RobotCore:
     DriverStation.silenceJoystickConnectionWarning(not utils.isCompetitionMode())
     self.driver = XboxController(constants.Controllers.DRIVER_CONTROLLER_CONFIG)
     self.operator = XboxController(constants.Controllers.OPERATOR_CONTROLLER_CONFIG)
+    self.homingButton = ButtonController(constants.Controllers.HOMING_BUTTON_CONFIG)
 
   def _initTriggers(self) -> None:
     self._setupDriver()
     self._setupOperator()
+
+    self.homingButton.pressed().debounce(1.0).whileTrue(
+      cmd.parallel(
+        self.intake.resetToHome(), 
+        self.launcher.resetToHome(),
+        self.drive.holdCoastMode()
+      ).onlyWhile(lambda: utils.getRobotState() == RobotState.DISABLED)
+      .ignoringDisable(True)
+      .withName("HomingButton:Pressed")
+    )
 
   # TODO: implement driver commands for robot functions (align to target, drive to target)
   def _setupDriver(self) -> None:
