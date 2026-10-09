@@ -231,6 +231,10 @@ class Services:
       LaunchMetric(distance = 7.0, speed = 1.00)
     )
 
+  class Lights:
+    LED_CHANNEL: int = 0
+    LED_LENGTH: int = 8
+
 class Sensors: 
   class Gyro:
     NAVX_PORT = navx.AHRS.NavXComType.kMXP_SPI
