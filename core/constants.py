@@ -108,7 +108,7 @@ class Subsystems:
       motorType = SparkLowLevel.MotorType.kBrushless,
       currentLimit = 60,
       isInverted = True,
-      softLimitForward = 20.0,
+      softLimitForward = 22.0,
       softLimitReverse = 0,
       controlPID = PID(0.2, 0, 0),
       outputRange = Range(-1.0, 1.0),
@@ -287,20 +287,24 @@ class Game:
     # TODO: calculate all target poses from field layout
     TARGETS: dict[Alliance, dict[Target, Pose3d]] = {
       Alliance.BLUE: {
-        Target.STABLE_LEFT: Pose3d(8.3, 5.15, 0, Rotation3d(Rotation2d.fromDegrees(0))),
-        Target.STABLE_RIGHT: Pose3d(8.3, 1.65, 0, Rotation3d(Rotation2d.fromDegrees(0))),
-        Target.HAYBINE_LEFT: Pose3d(0.6, 7.2, 0, Rotation3d(Rotation2d.fromDegrees(0))),
-        Target.HAYBINE_RIGHT: Pose3d(0.6, 0.8, 0, Rotation3d(Rotation2d.fromDegrees(0))),
-        Target.CROP_CIRCLE_LEFT: Pose3d(1.75, 5.7, 0, Rotation3d(Rotation2d.fromDegrees(-5.0))),
-        Target.CROP_CIRCLE_RIGHT: Pose3d(1.75, 2.35, 0, Rotation3d(Rotation2d.fromDegrees(-6.5)))
+        Target.STABLE_RIGHT: Pose3d(8.30, 1.65, 0, Rotation3d(Rotation2d.fromDegrees(0))),
+        Target.STABLE_LEFT: Pose3d(8.30, 5.15, 0, Rotation3d(Rotation2d.fromDegrees(0))),
+        Target.HAYBINE_RIGHT: Pose3d(0.60, 0.80, 0, Rotation3d(Rotation2d.fromDegrees(0))),
+        Target.HAYBINE_LEFT: Pose3d(0.60, 7.20, 0, Rotation3d(Rotation2d.fromDegrees(0))),
+        Target.CROP_CIRCLE_RIGHT: Pose3d(1.75, 2.35, 0, Rotation3d(Rotation2d.fromDegrees(-6.5))),
+        Target.CROP_CIRCLE_LEFT: Pose3d(1.75, 5.70, 0, Rotation3d(Rotation2d.fromDegrees(-5.0))),
+        Target.BALE_RIGHT: Pose3d(2.40, 2.35, 0, Rotation3d(Rotation2d.fromDegrees(0))),
+        Target.BALE_LEFT: Pose3d(2.40, 5.70, 0, Rotation3d(Rotation2d.fromDegrees(0)))
       },
       Alliance.RED: {
-        Target.STABLE_LEFT: Pose3d(8.300, 2.950, 0, Rotation3d(Rotation2d.fromDegrees(180))),
-        Target.STABLE_RIGHT: Pose3d(8.300, 6.450, 0, Rotation3d(Rotation2d.fromDegrees(180))),
-        Target.HAYBINE_LEFT: Pose3d(15.9, 0.80, 0, Rotation3d(Rotation2d.fromDegrees(180))),
-        Target.HAYBINE_RIGHT: Pose3d(15.9, 7.20, 0, Rotation3d(Rotation2d.fromDegrees(180))),
-        Target.CROP_CIRCLE_LEFT: Pose3d(14.800, 2.350, 0, Rotation3d(Rotation2d.fromDegrees(175.0))),
-        Target.CROP_CIRCLE_RIGHT: Pose3d(14.800, 5.700, 0, Rotation3d(Rotation2d.fromDegrees(173.5)))
+        Target.STABLE_RIGHT: Pose3d(8.30, 6.45, 0, Rotation3d(Rotation2d.fromDegrees(180.0))),
+        Target.STABLE_LEFT: Pose3d(8.30, 2.95, 0, Rotation3d(Rotation2d.fromDegrees(180.0))),
+        Target.HAYBINE_RIGHT: Pose3d(15.90, 7.20, 0, Rotation3d(Rotation2d.fromDegrees(180.0))),
+        Target.HAYBINE_LEFT: Pose3d(15.90, 0.80, 0, Rotation3d(Rotation2d.fromDegrees(180.0))),
+        Target.CROP_CIRCLE_RIGHT: Pose3d(14.80, 5.70, 0, Rotation3d(Rotation2d.fromDegrees(173.5))),
+        Target.CROP_CIRCLE_LEFT: Pose3d(14.80, 2.35, 0, Rotation3d(Rotation2d.fromDegrees(175.0))),
+        Target.BALE_RIGHT: Pose3d(14.15, 5.70, 0, Rotation3d(Rotation2d.fromDegrees(180.0))),
+        Target.BALE_LEFT: Pose3d(14.15, 2.35, 0, Rotation3d(Rotation2d.fromDegrees(180.0))),
       }
     }
 

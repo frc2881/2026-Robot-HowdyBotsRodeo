@@ -38,6 +38,12 @@ class Intake(Subsystem):
     self._rollersBottom.setSpeed(self._constants.ROLLERS_BOTTOM_INTAKE_SPEED)
     self._rollersTop.setSpeed(self._constants.ROLLERS_TOP_INTAKE_SPEED)
 
+  def extend(self) -> Command:
+    return self.runEnd(
+      lambda: self._extend(),
+      lambda: self.reset()
+    ).until(lambda: self.isExtended())
+
   def hold(self) -> Command:
     return self.runEnd(
       lambda: self._hold(),
@@ -64,7 +70,7 @@ class Intake(Subsystem):
     self._armLeader.setPosition(self._constants.ARM_INTAKE_POSITION)
 
   def isExtended(self) -> bool:
-    return self._armLeader.getPosition() > self._constants.ARM_INTAKE_POSITION * 0.75
+    return self._armLeader.getPosition() > self._constants.ARM_INTAKE_POSITION * 0.9
   
   def isRunning(self) -> bool:
     return self._rollersBottom.getSpeed() > 0.1 or self._rollersTop.getSpeed() > 0.1

@@ -67,6 +67,7 @@ class Auto:
 
   def auto_RIGHT_SCORE_2(self) -> Command:
     return cmd.sequence(
+      self._robot.game.extend(),
       self._robot.game.score(Target.STABLE_RIGHT),
       self.followPath(AutoPath.RIGHT_PICKUP_1).deadlineFor(self._robot.game.load()),
       self._robot.game.alignRobotToTargetPose(Target.CROP_CIRCLE_RIGHT),
@@ -91,6 +92,7 @@ class Auto:
 
   def auto_LEFT_SCORE_2(self) -> Command:
     return cmd.sequence(
+      self._robot.game.extend(),
       self._robot.game.score(Target.STABLE_LEFT),
       self.followPath(AutoPath.LEFT_PICKUP_1).deadlineFor(self._robot.game.load()),
       self._robot.game.alignRobotToTargetPose(Target.CROP_CIRCLE_LEFT),

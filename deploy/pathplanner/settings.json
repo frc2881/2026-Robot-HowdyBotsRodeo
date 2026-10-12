@@ -4,8 +4,8 @@
   "holonomicMode": true,
   "pathFolders": [],
   "autoFolders": [],
-  "defaultMaxVel": 2.0,
-  "defaultMaxAccel": 2.4,
+  "defaultMaxVel": 1.6,
+  "defaultMaxAccel": 2.0,
   "defaultMaxAngVel": 540.0,
   "defaultMaxAngAccel": 720.0,
   "defaultNominalVoltage": 12.0,
@@ -29,6 +29,6 @@
   "bumperOffsetX": 0.0,
   "bumperOffsetY": 0.0,
   "robotFeatures": [
-    "{\"name\":\"Intake\",\"type\":\"line\",\"data\":{\"start\":{\"x\":-0.68,\"y\":0.4},\"end\":{\"x\":-0.68,\"y\":-0.4},\"strokeWidth\":0.02}}"
+    "{\"name\":\"Intake\",\"type\":\"line\",\"data\":{\"start\":{\"x\":-0.775,\"y\":0.4},\"end\":{\"x\":-0.775,\"y\":-0.4},\"strokeWidth\":0.02}}"
   ]
 }

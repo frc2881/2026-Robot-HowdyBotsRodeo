@@ -30,6 +30,12 @@ class Game:
       .withName(f'Game:AlignRobotToTargetHeading:{ target.name }')
     )
 
+  def extend(self) -> Command:
+    return (
+      self._robot.intake.extend()
+      .withName("Game:Extend")
+    )
+
   def load(self) -> Command:
     return (
       self._robot.intake.run_()
@@ -65,7 +71,7 @@ class Game:
 
   def launchOverride(self) -> Command:
     return (
-      self._robot.launcher.launchOverride()
+      self._robot.launcher.test()
       .onlyIf(lambda: self.isReadyToLaunch())
     )
 

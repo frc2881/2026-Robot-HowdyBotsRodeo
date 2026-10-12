@@ -24,7 +24,7 @@ class Launcher(Subsystem):
 
     self.setDefaultCommand(self._launcherLeader.retract(self))
 
-    SmartDashboard.putNumber("Robot/Launcher/SpeedOverride", 0.3)
+    SmartDashboard.putNumber("Robot/Launcher/TestSpeed", 0.3)
 
   def periodic(self) -> None:
     self._updateTelemetry()
@@ -32,8 +32,8 @@ class Launcher(Subsystem):
   def launch(self, getSpeed: Callable[[], units.percent]) -> Command:
     return self._launcherLeader.launch(lambda: getSpeed(), self)
 
-  def launchOverride(self) -> Command:
-    return self._launcherLeader.launch(lambda: SmartDashboard.getNumber("Robot/Launcher/SpeedOverride", 0), self)
+  def test(self) -> Command:
+    return self._launcherLeader.launch(lambda: SmartDashboard.getNumber("Robot/Launcher/TestSpeed", 0), self)
 
   def isReady(self) -> bool:
     return self._getLauncherSensorHasTarget()

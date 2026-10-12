@@ -12,12 +12,14 @@ class AutoPath(Enum):
   CUSTOM = auto()
 
 class Target(Enum):
-  STABLE_LEFT = auto()
   STABLE_RIGHT = auto()
-  HAYBINE_LEFT = auto()
+  STABLE_LEFT = auto()
   HAYBINE_RIGHT = auto()
-  CROP_CIRCLE_LEFT = auto()
+  HAYBINE_LEFT = auto()
   CROP_CIRCLE_RIGHT = auto()
+  CROP_CIRCLE_LEFT = auto()
+  BALE_RIGHT = auto()
+  BALE_LEFT = auto()
 
 class Zone(Enum):
   ALLIANCE_ZONE_RIGHT = auto()
