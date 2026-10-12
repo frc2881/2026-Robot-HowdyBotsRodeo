@@ -67,50 +67,50 @@ class Auto:
 
   def auto_RIGHT_SCORE_2(self) -> Command:
     return cmd.sequence(
-      self._robot.game.scoreHayFromLauncher(Target.STABLE_RIGHT),
-      self.followPath(AutoPath.RIGHT_PICKUP_1).deadlineFor(self._robot.game.loadHayIntoLauncher()),
+      self._robot.game.score(Target.STABLE_RIGHT),
+      self.followPath(AutoPath.RIGHT_PICKUP_1).deadlineFor(self._robot.game.load()),
       self._robot.game.alignRobotToTargetPose(Target.CROP_CIRCLE_RIGHT),
-      self._robot.game.scoreHayFromLauncher(Target.STABLE_RIGHT)
+      self._robot.game.score(Target.STABLE_RIGHT)
     ).withName("Auto:RIGHT_SCORE_2")
 
   def auto_RIGHT_SCORE_3(self) -> Command:
     return cmd.sequence(
       self.auto_RIGHT_SCORE_2(),
-      self.followPath(AutoPath.RIGHT_PICKUP_2).deadlineFor(self._robot.game.loadHayIntoLauncher()),
+      self.followPath(AutoPath.RIGHT_PICKUP_2).deadlineFor(self._robot.game.load()),
       self._robot.game.alignRobotToTargetPose(Target.CROP_CIRCLE_RIGHT),
-      self._robot.game.scoreHayFromLauncher(Target.STABLE_RIGHT)
+      self._robot.game.score(Target.STABLE_RIGHT)
     ).withName("Auto:RIGHT_SCORE_3")
 
   def auto_RIGHT_SCORE_4(self) -> Command:
     return cmd.sequence(
       self.auto_RIGHT_SCORE_3(),
-      self.followPath(AutoPath.RIGHT_PICKUP_3).deadlineFor(self._robot.game.loadHayIntoLauncher()),
+      self.followPath(AutoPath.RIGHT_PICKUP_3).deadlineFor(self._robot.game.load()),
       self._robot.game.alignRobotToTargetPose(Target.CROP_CIRCLE_RIGHT),
-      self._robot.game.scoreHayFromLauncher(Target.STABLE_RIGHT)
+      self._robot.game.score(Target.STABLE_RIGHT)
     ).withName("Auto:RIGHT_SCORE_4")
 
   def auto_LEFT_SCORE_2(self) -> Command:
     return cmd.sequence(
-      self._robot.game.scoreHayFromLauncher(Target.STABLE_LEFT),
-      self.followPath(AutoPath.LEFT_PICKUP_1).deadlineFor(self._robot.game.loadHayIntoLauncher()),
+      self._robot.game.score(Target.STABLE_LEFT),
+      self.followPath(AutoPath.LEFT_PICKUP_1).deadlineFor(self._robot.game.load()),
       self._robot.game.alignRobotToTargetPose(Target.CROP_CIRCLE_LEFT),
-      self._robot.game.scoreHayFromLauncher(Target.STABLE_LEFT)
+      self._robot.game.score(Target.STABLE_LEFT)
     ).withName("Auto:LEFT_SCORE_2")
 
   def auto_LEFT_SCORE_3(self) -> Command:
     return cmd.sequence(
       self.auto_LEFT_SCORE_2(),
-      self.followPath(AutoPath.LEFT_PICKUP_2).deadlineFor(self._robot.game.loadHayIntoLauncher()),
+      self.followPath(AutoPath.LEFT_PICKUP_2).deadlineFor(self._robot.game.load()),
       self._robot.game.alignRobotToTargetPose(Target.CROP_CIRCLE_LEFT),
-      self._robot.game.scoreHayFromLauncher(Target.STABLE_LEFT)
+      self._robot.game.score(Target.STABLE_LEFT)
     ).withName("Auto:LEFT_SCORE_3")
 
   def auto_LEFT_SCORE_4(self) -> Command:
     return cmd.sequence(
       self.auto_LEFT_SCORE_3(),
-      self.followPath(AutoPath.LEFT_PICKUP_3).deadlineFor(self._robot.game.loadHayIntoLauncher()),
+      self.followPath(AutoPath.LEFT_PICKUP_3).deadlineFor(self._robot.game.load()),
       self._robot.game.alignRobotToTargetPose(Target.CROP_CIRCLE_LEFT),
-      self._robot.game.scoreHayFromLauncher(Target.STABLE_LEFT)
+      self._robot.game.score(Target.STABLE_LEFT)
     ).withName("Auto:LEFT_SCORE_4")
 
   def auto_CUSTOM(self) -> Command:

@@ -30,29 +30,50 @@ class Game:
       .withName(f'Game:AlignRobotToTargetHeading:{ target.name }')
     )
 
-  def loadHayIntoLauncher(self) -> Command:
+  def load(self) -> Command:
     return (
       self._robot.intake.run_()
+      .onlyIf(lambda: self._isReadyToLoad())
+      .until(lambda: self.isReadyToLaunch())
       .andThen(self.rumbleControllers(ControllerRumbleMode.BOTH))
-      .onlyIf(lambda: self._robot.launcher.isReset())
-      .until(lambda: self._robot.launcher.isReady())
-      .withName("Game:LoadHayIntoLauncher")
+      .withName("Game:Load")
     )
 
-  def scoreHayFromLauncher(self, target: Target) -> Command:
+  def score(self, target: Target) -> Command:
     return (
-      self.alignRobotToTargetHeading(target).until(lambda: self._robot.drive.isAlignedToTargetHeading())
-      .andThen(self._robot.launcher.launch(self._robot.targeting.getScoringTargetInfo(target).speed))
-      .andThen(self.rumbleControllers(ControllerRumbleMode.BOTH))
-      .onlyIf(lambda: self._robot.launcher.isReady())
-      .withName("Game:ScoreHayFromLauncher")
+      (
+        self.alignRobotToTargetHeading(target).until(lambda: self._robot.drive.isAlignedToTargetHeading())
+        .andThen(self._robot.launcher.launch(lambda: self._robot.targeting.getScoringTargetInfo(target).speed))
+        .andThen(self.rumbleControllers(ControllerRumbleMode.BOTH))
+      )
+      .onlyIf(lambda: self.isReadyToLaunch())
+      .withName("Game:Score")
     )
 
-  def holdHayForBale(self) -> Command:
+  def hold(self) -> Command:
     return (
       self._robot.intake.hold()
-      .withName("Game:HoldHayForBale")
+      .until(lambda: self._robot.intake.isHolding())
+      .withName("Game:Hold")
     )
+
+  def place(self) -> Command:
+    return (
+      self._robot.intake.place()
+      .withName("Game:Place")
+    )
+
+  def launchOverride(self) -> Command:
+    return (
+      self._robot.launcher.launchOverride()
+      .onlyIf(lambda: self.isReadyToLaunch())
+    )
+
+  def _isReadyToLoad(self) -> bool:
+    return self._robot.launcher.isRetracted()
+
+  def isReadyToLaunch(self) -> bool:
+    return self._robot.launcher.isReady() and self._robot.intake.isExtended()
   
   def resetGyro(self) -> Command:
     return (

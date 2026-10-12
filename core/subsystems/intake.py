@@ -1,5 +1,6 @@
 from commands2 import Subsystem, Command
 from lib import logger, telemetry, utils
+from lib.classes import IdleMode
 from lib.modules.relative_position_control import RelativePositionControlModule
 from lib.modules.velocity_control import VelocityControlModule
 from lib.modules.follower_control import FollowerControlModule
@@ -15,53 +16,64 @@ class Intake(Subsystem):
 
     self._armLeader = RelativePositionControlModule(self._constants.ARM_LEADER_CONFIG)
     self._armFollower = FollowerControlModule(self._constants.ARM_FOLLOWER_CONFIG)
-    self._rollersTop = VelocityControlModule(self._constants.ROLLERS_TOP_CONFIG)
     self._rollersBottom = VelocityControlModule(self._constants.ROLLERS_BOTTOM_CONFIG)
+    self._rollersTop = VelocityControlModule(self._constants.ROLLERS_TOP_CONFIG)
 
-    self._rollersTopCurrentSensor = CurrentSensor(self._constants.ROLLERS_TOP_CURRENT_SENSOR_CONFIG, lambda: self._rollersTop.getOutputCurrent())
+    self._rollersCurrentSensor = CurrentSensor(self._constants.ROLLERS_CURRENT_SENSOR_CONFIG, lambda: self._rollersBottom.getOutputCurrent())
+
+    self._armLeader.setIdleMode(IdleMode.COAST)
+    self._armFollower.setIdleMode(IdleMode.COAST)
 
   def periodic(self) -> None:
     self._updateTelemetry()
 
   def run_(self) -> Command:
-    return self.startEnd(
+    return self.runEnd(
       lambda: self._run(),
       lambda: self.reset()
     )
   
   def _run(self) -> None:
     self._extend()
-    self._rollersTop.setSpeed(self._constants.ROLLERS_TOP_INTAKE_SPEED)
     self._rollersBottom.setSpeed(self._constants.ROLLERS_BOTTOM_INTAKE_SPEED)
+    self._rollersTop.setSpeed(self._constants.ROLLERS_TOP_INTAKE_SPEED)
 
   def hold(self) -> Command:
-    return self.startEnd(
+    return self.runEnd(
       lambda: self._hold(),
       lambda: self.reset()
     )
 
   def _hold(self) -> None:
     self._extend()
-    self._rollersTop.setSpeed(self._constants.ROLLERS_TOP_HOLD_SPEED)
-    self._rollersBottom.setSpeed(self._constants.ROLLERS_BOTTOM_HOLD_SPEED)
+    self._rollersBottom.setSpeed(self._constants.ROLLERS_HOLD_SPEED)
+    self._rollersTop.setSpeed(0)
+
+  def place(self) -> Command:
+    return self.runEnd(
+      lambda: self._place(),
+      lambda: self.reset()
+    )
+
+  def _place(self) -> None:
+    self._extend()
+    self._rollersBottom.setSpeed(-self._constants.ROLLERS_PLACE_SPEED / 2)
+    self._rollersTop.setSpeed(-self._constants.ROLLERS_PLACE_SPEED)
 
   def _extend(self) -> None:
     self._armLeader.setPosition(self._constants.ARM_INTAKE_POSITION)
-
-  def _retract(self) -> None:
-    self._armLeader.setPosition(0)
 
   def isExtended(self) -> bool:
     return self._armLeader.getPosition() > self._constants.ARM_INTAKE_POSITION * 0.75
   
   def isRunning(self) -> bool:
-    return self._rollersTop.getSpeed() > 0.1
+    return self._rollersBottom.getSpeed() > 0.1 or self._rollersTop.getSpeed() > 0.1
 
   def isHolding(self) -> bool:
-    return self._rollersTopCurrentSensor.hasTarget()
+    return self._rollersCurrentSensor.hasTarget()
 
-  def resetToHome(self) -> Command:
-    return self._armLeader.resetToHome(self).withName("Intake:ResetToHome")
+  def resetToHome(self) -> Command: 
+    return self._armLeader.resetToHome(self, defaultIdleMode = IdleMode.COAST).withName("Intake:ResetToHome")
 
   def isHoming(self) -> bool:
     return self._armLeader.isHoming()

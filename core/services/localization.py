@@ -94,7 +94,7 @@ class Localization():
       stdDevZ *= self._constants.STDDEV_TARGET_REPROJECTION_ERROR_SCALE_FACTOR * poseSensorResult.bestTargetReprojectionError
     else: 
       stdDevXY *= self._constants.STDDEV_TARGET_AMBIGUITY_SCALE_FACTOR * (poseSensorResult.bestTargetAmbiguity + 0.01)
-      stdDevZ = Value.max
+      stdDevZ *= self._constants.STDDEV_TARGET_AMBIGUITY_SCALE_FACTOR * (poseSensorResult.bestTargetAmbiguity + 0.03)
     return (stdDevXY, stdDevXY, stdDevZ)
 
   def getRobotPose(self) -> Pose2d:

@@ -46,3 +46,4 @@ class LightsMode(Enum):
   ROBOT_NOT_HOMED = auto()
   ROBOT_IS_HOMING = auto()
   VISION_NOT_READY = auto()
+  LAUNCH_READY = auto()

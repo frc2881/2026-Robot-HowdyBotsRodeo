@@ -75,15 +75,15 @@ class Subsystems:
     TARGET_POSE_ALIGNMENT_CONSTANTS = PoseAlignmentConstants(
       translationControlPID = PID(4.0, 0, 0),
       translationMaxVelocity = 3.2,
-      translationPositionTolerance = 0.15,
+      translationPositionTolerance = 0.1,
       rotationControlPID = PID(4.0, 0, 0),
       rotationMaxVelocity = 720.0,
-      rotationPositionTolerance = 5.0
+      rotationPositionTolerance = 2.5
     )
 
     TARGET_HEADING_ALIGNMENT_CONSTANTS = HeadingAlignmentConstants(
       rotationControlPID = PID(0.01, 0, 0), 
-      rotationPositionTolerance = 5.0
+      rotationPositionTolerance = 2.5
     )
 
     DRIFT_CORRECTION_CONSTANTS = HeadingAlignmentConstants(
@@ -102,28 +102,26 @@ class Subsystems:
     DRIFT_CORRECTION = State.ENABLED
 
   class Intake:
-    # TODO: Configure these values for real
     ARM_LEADER_CONFIG = RelativePositionControlModuleConfig(
       id = 10, 
       controllerType = SparkLowLevel.SparkModel.kSparkMax,
       motorType = SparkLowLevel.MotorType.kBrushless,
       currentLimit = 60,
-      isInverted = False,
-      softLimitForward = 50.0,
+      isInverted = True,
+      softLimitForward = 20.0,
       softLimitReverse = 0,
-      controlPID = PID(1.0, 0, 0),
-      outputRange = Range(-1.0, 0.8),
+      controlPID = PID(0.2, 0, 0),
+      outputRange = Range(-1.0, 1.0),
       feedForwardGains = FeedForwardGains(velocity = 12.0 / lib.constants.Motors.FREE_SPEEDS[MotorModel.NEO]),
-      cruiseVelocity = 12000.0,
-      maxAcceleration = 24000.0,
+      cruiseVelocity = 6000.0,
+      maxAcceleration = 12000.0,
       allowedProfileError = 0.5,
       homingPosition = 0,
-      homingSpeed = 0.5,
+      homingSpeed = 0.1,
       positionConversionFactor = 1.0,
       telemetryName = "Robot/Subsystems/Intake/Arm/Leader"
     )
 
-    # TODO: Configure these values for real
     ARM_FOLLOWER_CONFIG = FollowerControlModuleConfig(
       id = 11,
       leaderId = 10,
@@ -134,24 +132,8 @@ class Subsystems:
       telemetryName = "Robot/Subsystems/Intake/Arm/Follower"
     )
 
-    # TODO: Configure these values for real
-    ROLLERS_TOP_CONFIG = VelocityControlModuleConfig(
-      id = 12,
-      controllerType = SparkLowLevel.SparkModel.kSparkMax,
-      motorType = SparkLowLevel.MotorType.kBrushless,
-      currentLimit = 60,
-      isInverted = False,
-      controlPID = PID(0.0001, 0, 0),
-      feedForwardGains = FeedForwardGains(velocity = 12.0 / lib.constants.Motors.FREE_SPEEDS[MotorModel.NEO]),
-      cruiseVelocity = 6000.0,
-      maxAcceleration = 12000.0,
-      allowedProfileError = 0.1,
-      telemetryName = "Robot/Subsystems/Intake/Rollers/Top"
-    )
-
-    # TODO: Configure these values for real
     ROLLERS_BOTTOM_CONFIG = VelocityControlModuleConfig(
-      id = 13,
+      id = 12,
       controllerType = SparkLowLevel.SparkModel.kSparkMax,
       motorType = SparkLowLevel.MotorType.kBrushless,
       currentLimit = 60,
@@ -164,39 +146,51 @@ class Subsystems:
       telemetryName = "Robot/Subsystems/Intake/Rollers/Bottom"
     )
 
-    ARM_INTAKE_POSITION: float = 20.0 # TODO: test/calculate
-    ROLLERS_TOP_INTAKE_SPEED: units.percent = 1.0 # TODO: test/calculate
-    ROLLERS_BOTTOM_INTAKE_SPEED: units.percent = 1.0 # TODO: test/calculate
-    ROLLERS_TOP_HOLD_SPEED: units.percent = 0.25 # TODO: test/calculate
-    ROLLERS_BOTTOM_HOLD_SPEED: units.percent = 0 # TODO: test/calculate
-
-    ROLLERS_TOP_CURRENT_SENSOR_CONFIG = CurrentSensorConfig(
-      targetCurrent = 40, #TODO: test/calculate
-      changeTime = 0.5, #TODO: test/calculate
-      telemetryName = "Robot/Sensors/Current/Intake/Rollers/Top"
-    )
-
-  class Launcher:
-    # TODO: Configure these values for real
-    LAUNCHER_LEADER_CONFIG = CatapultModuleConfig(
-      id = 14,
+    ROLLERS_TOP_CONFIG = VelocityControlModuleConfig(
+      id = 13,
       controllerType = SparkLowLevel.SparkModel.kSparkMax,
       motorType = SparkLowLevel.MotorType.kBrushless,
       currentLimit = 60,
-      isInverted = False,
+      isInverted = True,
       controlPID = PID(0.0001, 0, 0),
       feedForwardGains = FeedForwardGains(velocity = 12.0 / lib.constants.Motors.FREE_SPEEDS[MotorModel.NEO]),
       cruiseVelocity = 6000.0,
       maxAcceleration = 12000.0,
       allowedProfileError = 0.1,
+      telemetryName = "Robot/Subsystems/Intake/Rollers/Top"
+    )
+
+    ARM_INTAKE_POSITION: float = 20.0 # TODO: test/calculate/validate
+    ROLLERS_BOTTOM_INTAKE_SPEED: units.percent = 1.0
+    ROLLERS_TOP_INTAKE_SPEED: units.percent = 0.3
+    ROLLERS_HOLD_SPEED: units.percent = 0.15
+    ROLLERS_PLACE_SPEED: units.percent = 0.15
+
+    ROLLERS_CURRENT_SENSOR_CONFIG = CurrentSensorConfig(
+      targetCurrent = 20,
+      changeTime = 0.2,
+      telemetryName = "Robot/Sensors/Current/Intake/Rollers"
+    )
+
+  class Launcher:
+    # TODO: test/calculate/validate
+    LAUNCHER_LEADER_CONFIG = CatapultModuleConfig(
+      id = 14,
+      controllerType = SparkLowLevel.SparkModel.kSparkMax,
+      motorType = SparkLowLevel.MotorType.kBrushless,
+      currentLimit = 120,
+      isInverted = True,
+      controlPID = PID(0.0001, 0, 0),
+      feedForwardGains = FeedForwardGains(velocity = 12.0 / lib.constants.Motors.FREE_SPEEDS[MotorModel.NEO]),
+      cruiseVelocity = 6000.0,
+      maxAcceleration = 12000.0,
+      allowedProfileError = 0.25,
       homingSpeed = 0.1,
-      resetSpeed = 0.25,
-      holdSpeed = 0.01,
-      launchPosition = 5,
+      retractSpeed = 0.1,
+      launchPosition = 6.0,
       telemetryName = "Robot/Subsystems/Launcher/Leader"
     )
 
-    # TODO: Configure these values for real
     LAUNCHER_FOLLOWER_CONFIG = FollowerControlModuleConfig(
       id = 15,
       leaderId = 14,
@@ -222,13 +216,13 @@ class Services:
   # TODO: calculate all launch metrics with physical testing on robot once available
   class Targeting:
     LAUNCH_METRICS: tuple[LaunchMetric, ...] = (
-      LaunchMetric(distance = 1.0, speed = 0.15),
-      LaunchMetric(distance = 2.0, speed = 0.25),
+      LaunchMetric(distance = 1.0, speed = 0.30),
+      LaunchMetric(distance = 2.0, speed = 0.35),
       LaunchMetric(distance = 3.0, speed = 0.40),
-      LaunchMetric(distance = 4.0, speed = 0.55),
-      LaunchMetric(distance = 5.0, speed = 0.70),
-      LaunchMetric(distance = 6.0, speed = 0.85),
-      LaunchMetric(distance = 7.0, speed = 1.00)
+      LaunchMetric(distance = 4.0, speed = 0.45),
+      LaunchMetric(distance = 5.0, speed = 0.50),
+      LaunchMetric(distance = 6.0, speed = 0.55),
+      LaunchMetric(distance = 7.0, speed = 0.60)
     )
 
   class Lights:
@@ -237,16 +231,15 @@ class Services:
 
 class Sensors: 
   class Gyro:
-    NAVX_PORT = navx.AHRS.NavXComType.kMXP_SPI
+    NAVX_PORT = navx.AHRS.NavXComType.kUSB1
 
-  # TODO: calculate correct camera transforms once installed on robot chassis
   class Pose:
     POSE_SENSOR_CONFIGS: tuple[PoseSensorConfig, ...] = (
       PoseSensorConfig(
         cameraName = "FrontLeft", 
         transform = Transform3d(
-          Translation3d(x = units.inchesToMeters(8.0), y = units.inchesToMeters(2.5), z = units.inchesToMeters(10.0)),
-          Rotation3d(roll = units.degreesToRadians(0), pitch = units.degreesToRadians(-20.0), yaw = units.degreesToRadians(10.0))
+          Translation3d(x = units.inchesToMeters(13.36), y = units.inchesToMeters(1.09), z = units.inchesToMeters(11.27)),
+          Rotation3d(roll = units.degreesToRadians(10.0), pitch = units.degreesToRadians(-20.0), yaw = units.degreesToRadians(20.0))
         ),
         stream = "http://10.18.82.6:1182/?action=stream",
         aprilTagFieldLayout = _aprilTagFieldLayout,
@@ -255,8 +248,8 @@ class Sensors:
       PoseSensorConfig(
         cameraName = "FrontRight",
         transform = Transform3d(
-        Translation3d(x = units.inchesToMeters(8.0), y = units.inchesToMeters(-2.5), z = units.inchesToMeters(10.0)),
-        Rotation3d(roll = units.degreesToRadians(0), pitch = units.degreesToRadians(-20.0), yaw = units.degreesToRadians(-10.0))
+        Translation3d(x = units.inchesToMeters(13.36), y = units.inchesToMeters(-1.09), z = units.inchesToMeters(11.27)),
+        Rotation3d(roll = units.degreesToRadians(-10.0), pitch = units.degreesToRadians(-20.0), yaw = units.degreesToRadians(-20.0))
       ),
         stream = "http://10.18.82.6:1184/?action=stream",
         aprilTagFieldLayout = _aprilTagFieldLayout,
@@ -281,7 +274,7 @@ class Controllers:
 class Game:
   class Robot:
     TYPE = RobotType.COMPETITION
-    NAME: str = "TBD" # TODO: provide chosen robot name from team
+    NAME: str = "Spud"
 
   class Commands:
     pass

@@ -1,7 +1,9 @@
 from typing import Callable
+from wpilib import SmartDashboard
 from wpimath import units
 from commands2 import Subsystem, Command
 from lib import logger, telemetry, utils
+from lib.classes import IdleMode
 from lib.modules.catapult import CatapultModule
 from lib.modules.follower_control import FollowerControlModule
 import core.constants as constants
@@ -20,17 +22,24 @@ class Launcher(Subsystem):
     self._launcherLeader = CatapultModule(self._constants.LAUNCHER_LEADER_CONFIG)
     self._launcherFollower = FollowerControlModule(self._constants.LAUNCHER_FOLLOWER_CONFIG)
 
+    self.setDefaultCommand(self._launcherLeader.retract(self))
+
+    SmartDashboard.putNumber("Robot/Launcher/SpeedOverride", 0.3)
+
   def periodic(self) -> None:
     self._updateTelemetry()
 
-  def launch(self, speed: units.percent) -> Command:
-    return self._launcherLeader.launch(speed, self)
+  def launch(self, getSpeed: Callable[[], units.percent]) -> Command:
+    return self._launcherLeader.launch(lambda: getSpeed(), self)
+
+  def launchOverride(self) -> Command:
+    return self._launcherLeader.launch(lambda: SmartDashboard.getNumber("Robot/Launcher/SpeedOverride", 0), self)
 
   def isReady(self) -> bool:
     return self._getLauncherSensorHasTarget()
 
-  def isReset(self) -> bool:
-    return self._launcherLeader.isReset()
+  def isRetracted(self) -> bool:
+    return self._launcherLeader.isRetracted()
 
   def resetToHome(self) -> Command:
     return self._launcherLeader.resetToHome(self).withName("Launcher:ResetToHome")
@@ -45,4 +54,4 @@ class Launcher(Subsystem):
     self._launcherLeader.reset()
 
   def _updateTelemetry(self) -> None:
-    telemetry.log(f'{self._telemetryName}/IsReset', self.isReset())
+    telemetry.log(f'{self._telemetryName}/IsRetracted', self.isRetracted())

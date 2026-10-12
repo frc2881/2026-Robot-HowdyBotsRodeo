@@ -10,24 +10,26 @@ class Lights():
       self,
       isHoming: Callable[[], bool],
       isHomed: Callable[[], bool],
-      hasValidPoseSensorResult: Callable[[], bool]
+      hasValidPoseSensorResult: Callable[[], bool],
+      isLaunchReady: Callable[[], bool]
     ) -> None:
     self._constants = constants.Services.Lights
     self._isHoming = isHoming
     self._isHomed = isHomed
     self._hasValidPoseSensorResult = hasValidPoseSensorResult
+    self._isLaunchReady = isLaunchReady
 
     self._telemetryName = "Robot/Services/Lights"
 
     self._lightsMode = LightsMode.DEFAULT
-    self._colorPink = Color(255, 20, 147)
 
-    self._ledPatterns: dict[LightsMode, LEDPattern] = {
-      LightsMode.DEFAULT: LEDPattern.solid(self._colorPink),
-      LightsMode.ROBOT_NOT_CONNECTED: LEDPattern.solid(Color.kRed),
-      LightsMode.ROBOT_NOT_HOMED: LEDPattern.solid(Color.kRed).breathe(0.5),
-      LightsMode.ROBOT_IS_HOMING: LEDPattern.solid(Color.kYellow).breathe(0.5),
-      LightsMode.VISION_NOT_READY: LEDPattern.solid(Color.kBlue).breathe(0.5)
+    self._ledColors: dict[LightsMode, Color] = {
+      LightsMode.DEFAULT: Color(255, 20, 147),
+      LightsMode.ROBOT_NOT_CONNECTED: Color.kWhite,
+      LightsMode.ROBOT_NOT_HOMED: Color.kRed,
+      LightsMode.ROBOT_IS_HOMING: Color.kYellow,
+      LightsMode.VISION_NOT_READY: Color.kBlue,
+      LightsMode.LAUNCH_READY: Color.kGreen
     }
 
     self._led = AddressableLED(self._constants.LED_CHANNEL)
@@ -47,6 +49,7 @@ class Lights():
     if not DriverStation.isDSAttached():
       self._lightsMode = LightsMode.ROBOT_NOT_CONNECTED
       return
+    
     if utils.getRobotState() == RobotState.DISABLED:
       if self._isHoming():
         self._lightsMode = LightsMode.ROBOT_IS_HOMING
@@ -57,10 +60,17 @@ class Lights():
       if not self._hasValidPoseSensorResult():
         self._lightsMode = LightsMode.VISION_NOT_READY
         return
+      
+    if utils.getRobotState() == RobotState.ENABLED:
+      if self._isLaunchReady():
+        self._lightsMode = LightsMode.LAUNCH_READY
+        return
+      
     self._lightsMode = LightsMode.DEFAULT
 
   def _updateLights(self) -> None:
-    self._ledPatterns[self._lightsMode].applyTo(self._ledData)
+    for i in range(self._constants.LED_LENGTH):
+      self._ledData[i].setLED(self._ledColors[self._lightsMode])
     self._led.setData(self._ledData)
 
   def _updateTelemetry(self) -> None:

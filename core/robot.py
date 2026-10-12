@@ -1,4 +1,4 @@
-from wpilib import DriverStation, SmartDashboard
+from wpilib import DriverStation
 from commands2 import cmd
 from lib import logger, telemetry, utils
 from lib.classes import RobotState
@@ -47,7 +47,8 @@ class RobotCore:
     self.lights = Lights(
       lambda: self.isHoming(), 
       lambda: self.isHomed(), 
-      lambda: self.localization.hasValidPoseSensorResult()
+      lambda: self.localization.hasValidPoseSensorResult(),
+      lambda: self.game.isReadyToLaunch()
     )
 
   def _initCommands(self) -> None:
@@ -79,8 +80,8 @@ class RobotCore:
     self.drive.setDefaultCommand(self.drive.drive(self.driver.getLeftY, self.driver.getLeftX, self.driver.getRightX))
     self.driver.leftStick().whileTrue(self.drive.lockSwerveModules())
     # self.driver.rightStick().whileTrue(cmd.none())
-    self.driver.leftTrigger().whileTrue(self.game.scoreHayFromLauncher(Target.STABLE_LEFT))
-    self.driver.rightTrigger().whileTrue(self.game.scoreHayFromLauncher(Target.STABLE_RIGHT))
+    self.driver.leftTrigger().whileTrue(self.game.score(Target.STABLE_LEFT))
+    self.driver.rightTrigger().whileTrue(self.game.score(Target.STABLE_RIGHT))
     # self.driver.leftBumper().whileTrue(cmd.none())
     # self.driver.rightBumper().whileTrue(cmd.none())
     # self.driver.a().whileTrue(cmd.none())
@@ -89,22 +90,19 @@ class RobotCore:
     # self.driver.x().whileTrue(cmd.none())
     # self.driver.povLeft().whileTrue(cmd.none())
     # self.driver.povRight().whileTrue(cmd.none())
-    self.driver.povUp().whileTrue(self.launcher.launch(SmartDashboard.getNumber("Robot/Launcher/Speed", 0)))
+    # self.driver.povUp().whileTrue(cmd.none())
     # self.driver.povDown().whileTrue(cmd.none())
     # self.driver.start().whileTrue(cmd.none())
     self.driver.back().debounce(0.5).whileTrue(self.game.resetGyro())
-
-    # TODO: for initial launcher mechanism testing and launch metrics calculations - remove value and controller action before comp
-    SmartDashboard.putNumber("Robot/Launcher/Speed", 0)
 
   # TODO: implement operator commands for robot functions (intake, launcher, homing if needed)
   def _setupOperator(self) -> None:
     # self.operator.leftStick().whileTrue(cmd.none())
     # self.operator.rightStick().whileTrue(cmd.none())
-    self.operator.leftTrigger().whileTrue(self.game.loadHayIntoLauncher())
-    # self.operator.rightTrigger().whileTrue(cmd.none())
-    self.operator.leftBumper().whileTrue(self.game.holdHayForBale())
-    # self.operator.rightBumper().whileTrue(cmd.none())
+    self.operator.leftTrigger().whileTrue(self.game.load())
+    self.operator.rightTrigger().whileTrue(self.launcher.launchOverride())
+    self.operator.leftBumper().whileTrue(self.game.hold())
+    self.operator.rightBumper().whileTrue(self.game.place())
     # self.operator.a().whileTrue(cmd.none())
     # self.operator.b().whileTrue(cmd.none())
     # self.operator.y().whileTrue(cmd.none())
