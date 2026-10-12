@@ -222,7 +222,9 @@ class Services:
       LaunchMetric(distance = 4.0, speed = 0.45),
       LaunchMetric(distance = 5.0, speed = 0.50),
       LaunchMetric(distance = 6.0, speed = 0.55),
-      LaunchMetric(distance = 7.0, speed = 0.60)
+      LaunchMetric(distance = 7.0, speed = 0.60),
+      LaunchMetric(distance = 8.0, speed = 0.65),
+      LaunchMetric(distance = 9.0, speed = 0.70)
     )
 
   class Lights:

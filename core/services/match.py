@@ -21,7 +21,7 @@ class Match():
         self._matchState = MatchState.AUTO
         self._matchStateTime = matchTime
       if utils.getRobotMode() == RobotMode.TELEOP:
-        self._matchState = MatchState.END_GAME if utils.isValueWithinRange(matchTime, 0, 31) else MatchState.TELEOP
+        self._matchState = MatchState.END_GAME if utils.isValueWithinRange(matchTime, 0, 15) else MatchState.TELEOP
         self._matchStateTime = matchTime
     else:
       self._matchState = MatchState.STOPPED
