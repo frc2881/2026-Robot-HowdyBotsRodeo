@@ -241,7 +241,7 @@ class Sensors:
         cameraName = "FrontLeft", 
         transform = Transform3d(
           Translation3d(x = units.inchesToMeters(13.36), y = units.inchesToMeters(1.09), z = units.inchesToMeters(11.27)),
-          Rotation3d(roll = units.degreesToRadians(10.0), pitch = units.degreesToRadians(-20.0), yaw = units.degreesToRadians(20.0))
+          Rotation3d(roll = units.degreesToRadians(1.0), pitch = units.degreesToRadians(-20.0), yaw = units.degreesToRadians(20.0))
         ),
         stream = "http://10.18.82.6:1182/?action=stream",
         aprilTagFieldLayout = _aprilTagFieldLayout,
@@ -251,7 +251,7 @@ class Sensors:
         cameraName = "FrontRight",
         transform = Transform3d(
         Translation3d(x = units.inchesToMeters(13.36), y = units.inchesToMeters(-1.09), z = units.inchesToMeters(11.27)),
-        Rotation3d(roll = units.degreesToRadians(-10.0), pitch = units.degreesToRadians(-20.0), yaw = units.degreesToRadians(-20.0))
+        Rotation3d(roll = units.degreesToRadians(-1.0), pitch = units.degreesToRadians(-20.0), yaw = units.degreesToRadians(-20.0))
       ),
         stream = "http://10.18.82.6:1184/?action=stream",
         aprilTagFieldLayout = _aprilTagFieldLayout,
