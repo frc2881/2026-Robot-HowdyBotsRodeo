@@ -276,7 +276,7 @@ class Controllers:
 class Game:
   class Robot:
     TYPE = RobotType.COMPETITION
-    NAME: str = "Spud"
+    NAME: str = "SPUD"
 
   class Commands:
     pass
@@ -286,13 +286,12 @@ class Game:
     WIDTH = _aprilTagFieldLayout.getFieldWidth()
     BOUNDS = Rectangle2d(Translation2d(0, 0), Translation2d(LENGTH, WIDTH))
 
-    # TODO: calculate all target poses from field layout
     TARGETS: dict[Alliance, dict[Target, Pose3d]] = {
       Alliance.BLUE: {
         Target.STABLE_RIGHT: Pose3d(8.30, 1.65, 0, Rotation3d(Rotation2d.fromDegrees(0))),
         Target.STABLE_LEFT: Pose3d(8.30, 5.15, 0, Rotation3d(Rotation2d.fromDegrees(0))),
-        Target.HAYBINE_RIGHT: Pose3d(0.60, 0.80, 0, Rotation3d(Rotation2d.fromDegrees(0))),
-        Target.HAYBINE_LEFT: Pose3d(0.60, 7.20, 0, Rotation3d(Rotation2d.fromDegrees(0))),
+        Target.HAYBINE_RIGHT: Pose3d(1.00, 0.60, 0, Rotation3d(Rotation2d.fromDegrees(0))),
+        Target.HAYBINE_LEFT: Pose3d(1.00, 7.50, 0, Rotation3d(Rotation2d.fromDegrees(0))),
         Target.CROP_CIRCLE_RIGHT: Pose3d(1.75, 2.35, 0, Rotation3d(Rotation2d.fromDegrees(-6.5))),
         Target.CROP_CIRCLE_LEFT: Pose3d(1.75, 5.70, 0, Rotation3d(Rotation2d.fromDegrees(-5.0))),
         Target.BALE_RIGHT: Pose3d(2.40, 2.35, 0, Rotation3d(Rotation2d.fromDegrees(0))),
@@ -301,8 +300,8 @@ class Game:
       Alliance.RED: {
         Target.STABLE_RIGHT: Pose3d(8.30, 6.45, 0, Rotation3d(Rotation2d.fromDegrees(180.0))),
         Target.STABLE_LEFT: Pose3d(8.30, 2.95, 0, Rotation3d(Rotation2d.fromDegrees(180.0))),
-        Target.HAYBINE_RIGHT: Pose3d(15.90, 7.20, 0, Rotation3d(Rotation2d.fromDegrees(180.0))),
-        Target.HAYBINE_LEFT: Pose3d(15.90, 0.80, 0, Rotation3d(Rotation2d.fromDegrees(180.0))),
+        Target.HAYBINE_RIGHT: Pose3d(15.50, 7.50, 0, Rotation3d(Rotation2d.fromDegrees(180.0))),
+        Target.HAYBINE_LEFT: Pose3d(15.50, 0.60, 0, Rotation3d(Rotation2d.fromDegrees(180.0))),
         Target.CROP_CIRCLE_RIGHT: Pose3d(14.80, 5.70, 0, Rotation3d(Rotation2d.fromDegrees(173.5))),
         Target.CROP_CIRCLE_LEFT: Pose3d(14.80, 2.35, 0, Rotation3d(Rotation2d.fromDegrees(175.0))),
         Target.BALE_RIGHT: Pose3d(14.15, 5.70, 0, Rotation3d(Rotation2d.fromDegrees(180.0))),
@@ -310,14 +309,13 @@ class Game:
       }
     }
 
-    # TODO: calculate alliance zone sections (right / left) from field layout
     ZONES: dict[Alliance, dict[Zone, Rectangle2d]] = {
       Alliance.BLUE: {
-        Zone.ALLIANCE_ZONE_RIGHT: Rectangle2d(Translation2d(0, 0), Translation2d(0, 0)),
-        Zone.ALLIANCE_ZONE_LEFT: Rectangle2d(Translation2d(0, 0), Translation2d(0, 0))
+        Zone.ALLIANCE_ZONE_RIGHT: Rectangle2d(Translation2d(0, 0), Translation2d(8.27, 4.035)),
+        Zone.ALLIANCE_ZONE_LEFT: Rectangle2d(Translation2d(0, 4.036), Translation2d(8.27, 8.07))
       },
       Alliance.RED: {
-        Zone.ALLIANCE_ZONE_RIGHT: Rectangle2d(Translation2d(0, 0), Translation2d(0, 0)),
-        Zone.ALLIANCE_ZONE_LEFT: Rectangle2d(Translation2d(0, 0), Translation2d(0, 0))
+        Zone.ALLIANCE_ZONE_RIGHT: Rectangle2d(Translation2d(8.28, 4.036), Translation2d(16.54, 8.07)),
+        Zone.ALLIANCE_ZONE_LEFT: Rectangle2d(Translation2d(8.28, 0), Translation2d(16.54, 4.035))
       }
     }
