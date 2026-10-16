@@ -108,7 +108,7 @@ class Subsystems:
       motorType = SparkLowLevel.MotorType.kBrushless,
       currentLimit = 60,
       isInverted = True,
-      softLimitForward = 22.0,
+      softLimitForward = 21.0,
       softLimitReverse = 0,
       controlPID = PID(0.2, 0, 0),
       outputRange = Range(-1.0, 1.0),
@@ -160,8 +160,8 @@ class Subsystems:
       telemetryName = "Robot/Subsystems/Intake/Rollers/Top"
     )
 
-    ARM_INTAKE_POSITION: float = 20.0 # TODO: test/calculate/validate
-    ROLLERS_BOTTOM_INTAKE_SPEED: units.percent = 1.0
+    ARM_INTAKE_POSITION: float = 19.75 # TODO: test/calculate/validate
+    ROLLERS_BOTTOM_INTAKE_SPEED: units.percent = 0.7
     ROLLERS_TOP_INTAKE_SPEED: units.percent = 0.3
     ROLLERS_HOLD_SPEED: units.percent = 0.15
     ROLLERS_PLACE_SPEED: units.percent = 0.15
@@ -180,14 +180,16 @@ class Subsystems:
       motorType = SparkLowLevel.MotorType.kBrushless,
       currentLimit = 120,
       isInverted = True,
+      softLimitReverse = 0,
+      softLimitForward = 5.0,
       controlPID = PID(0.0001, 0, 0),
       feedForwardGains = FeedForwardGains(velocity = 12.0 / lib.constants.Motors.FREE_SPEEDS[MotorModel.NEO]),
-      cruiseVelocity = 6000.0,
-      maxAcceleration = 12000.0,
-      allowedProfileError = 0.25,
+      cruiseVelocity = 24000.0,
+      maxAcceleration = 48000.0,
+      allowedProfileError = 0.1,
       homingSpeed = 0.1,
-      retractSpeed = 0.1,
-      launchPosition = 6.0,
+      retractSpeed = 0.2,
+      launchPosition = 4.45,
       telemetryName = "Robot/Subsystems/Launcher/Leader"
     )
 
