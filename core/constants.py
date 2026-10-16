@@ -183,9 +183,12 @@ class Subsystems:
       softLimitReverse = 0,
       softLimitForward = 5.0,
       controlPID = PID(0.0001, 0, 0),
-      feedForwardGains = FeedForwardGains(velocity = 12.0 / lib.constants.Motors.FREE_SPEEDS[MotorModel.NEO]),
-      cruiseVelocity = 24000.0,
-      maxAcceleration = 48000.0,
+      feedForwardGains = FeedForwardGains(
+        velocity = 12.0 / lib.constants.Motors.FREE_SPEEDS[MotorModel.NEO],
+        acceleration = 12.0 / lib.constants.Motors.FREE_SPEEDS[MotorModel.NEO]
+      ),
+      cruiseVelocity = 6000.0,
+      maxAcceleration = 18000.0,
       allowedProfileError = 0.1,
       homingSpeed = 0.1,
       retractSpeed = 0.2,
