@@ -24,7 +24,7 @@ class Launcher(Subsystem):
 
     self.setDefaultCommand(self._launcherLeader.retract(self))
 
-    SmartDashboard.putNumber("Robot/Launcher/TestSpeed", 0.3)
+    SmartDashboard.putNumber("Robot/Launcher/TestSpeed", 0.5)
 
   def periodic(self) -> None:
     self._updateTelemetry()

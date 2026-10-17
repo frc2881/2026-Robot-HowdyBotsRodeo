@@ -12,6 +12,8 @@ class AutoPath(Enum):
   CUSTOM = auto()
 
 class Target(Enum):
+  SCORE_RIGHT = auto()
+  SCORE_LEFT = auto()
   STABLE_RIGHT = auto()
   STABLE_LEFT = auto()
   HAYBINE_RIGHT = auto()

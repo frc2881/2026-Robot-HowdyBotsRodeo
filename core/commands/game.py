@@ -39,20 +39,36 @@ class Game:
   def load(self) -> Command:
     return (
       self._robot.intake.run_()
-      .onlyIf(lambda: self._isReadyToLoad())
       .until(lambda: self.isReadyToLaunch())
       .andThen(self.rumbleControllers(ControllerRumbleMode.BOTH))
       .withName("Game:Load")
     )
 
-  def score(self, target: Target) -> Command:
+  def alignToTargetPoseAndScore(self, target: Target) -> Command:
+    return (
+      (
+        self.alignRobotToTargetPose(target)
+        .andThen(cmd.waitSeconds(0.5))
+        .andThen(
+          self._robot.launcher.launch(lambda: self._robot.targeting.getScoringTargetInfo(Target.STABLE_RIGHT if target == Target.SCORE_RIGHT else Target.STABLE_LEFT).speed)
+          .deadlineFor(self._robot.intake.run_())
+        )
+        .andThen(self.rumbleControllers(ControllerRumbleMode.BOTH))
+      )
+      .withName("Game:Score")
+    )
+
+  def alignToTargetHeadingAndScore(self, target: Target) -> Command:
     return (
       (
         self.alignRobotToTargetHeading(target).until(lambda: self._robot.drive.isAlignedToTargetHeading())
-        .andThen(self._robot.launcher.launch(lambda: self._robot.targeting.getScoringTargetInfo(target).speed))
+        .andThen(cmd.waitSeconds(0.5))
+        .andThen(
+          self._robot.launcher.launch(lambda: self._robot.targeting.getScoringTargetInfo(target).speed)
+          .deadlineFor(self._robot.intake.run_())
+        )
         .andThen(self.rumbleControllers(ControllerRumbleMode.BOTH))
       )
-      .onlyIf(lambda: self.isReadyToLaunch())
       .withName("Game:Score")
     )
 

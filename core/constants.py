@@ -74,11 +74,11 @@ class Subsystems:
 
     TARGET_POSE_ALIGNMENT_CONSTANTS = PoseAlignmentConstants(
       translationControlPID = PID(4.0, 0, 0),
-      translationMaxVelocity = 3.2,
-      translationPositionTolerance = 0.1,
+      translationMaxVelocity = 2.0,
+      translationPositionTolerance = 0.25,
       rotationControlPID = PID(4.0, 0, 0),
-      rotationMaxVelocity = 720.0,
-      rotationPositionTolerance = 2.5
+      rotationMaxVelocity = 360.0,
+      rotationPositionTolerance = 3.0
     )
 
     TARGET_HEADING_ALIGNMENT_CONSTANTS = HeadingAlignmentConstants(
@@ -108,7 +108,7 @@ class Subsystems:
       motorType = SparkLowLevel.MotorType.kBrushless,
       currentLimit = 60,
       isInverted = True,
-      softLimitForward = 21.0,
+      softLimitForward = 22.0,
       softLimitReverse = 0,
       controlPID = PID(0.2, 0, 0),
       outputRange = Range(-1.0, 1.0),
@@ -160,9 +160,9 @@ class Subsystems:
       telemetryName = "Robot/Subsystems/Intake/Rollers/Top"
     )
 
-    ARM_INTAKE_POSITION: float = 19.75 # TODO: test/calculate/validate
-    ROLLERS_BOTTOM_INTAKE_SPEED: units.percent = 0.7
-    ROLLERS_TOP_INTAKE_SPEED: units.percent = 0.3
+    ARM_INTAKE_POSITION: float = 20.5 # TODO: test/calculate/validate
+    ROLLERS_BOTTOM_INTAKE_SPEED: units.percent = 0.5
+    ROLLERS_TOP_INTAKE_SPEED: units.percent = 0.2
     ROLLERS_HOLD_SPEED: units.percent = 0.15
     ROLLERS_PLACE_SPEED: units.percent = 0.15
 
@@ -173,26 +173,26 @@ class Subsystems:
     )
 
   class Launcher:
-    # TODO: test/calculate/validate
     LAUNCHER_LEADER_CONFIG = CatapultModuleConfig(
       id = 14,
-      controllerType = SparkLowLevel.SparkModel.kSparkMax,
+      controllerType = SparkLowLevel.SparkModel.kSparkFlex,
       motorType = SparkLowLevel.MotorType.kBrushless,
       currentLimit = 120,
       isInverted = True,
-      softLimitReverse = 0,
-      softLimitForward = 5.0,
+      softLimitReverse = 0.25,
+      softLimitForward = 5.5,
       controlPID = PID(0.0001, 0, 0),
       feedForwardGains = FeedForwardGains(
-        velocity = 12.0 / lib.constants.Motors.FREE_SPEEDS[MotorModel.NEO],
-        acceleration = 12.0 / lib.constants.Motors.FREE_SPEEDS[MotorModel.NEO]
+        velocity = 12.0 / lib.constants.Motors.FREE_SPEEDS[MotorModel.NEO_VORTEX],
+        acceleration = 12.0 / lib.constants.Motors.FREE_SPEEDS[MotorModel.NEO_VORTEX]
       ),
       cruiseVelocity = 6000.0,
-      maxAcceleration = 18000.0,
+      maxAcceleration = 30000.0,
       allowedProfileError = 0.1,
       homingSpeed = 0.1,
-      retractSpeed = 0.2,
-      launchPosition = 4.45,
+      retractSpeed = 0.05,
+      launchPosition = 5.00,
+      positionTolerance = 0.5,
       telemetryName = "Robot/Subsystems/Launcher/Leader"
     )
 
@@ -210,7 +210,7 @@ class Services:
   class Localization:
     MAX_TARGET_AMBIGUITY: units.percent = 0.2
     MAX_TARGET_REPROJECTION_ERROR: float = 1.0
-    MAX_TARGET_DISTANCE: units.meters = 5.0
+    MAX_TARGET_DISTANCE: units.meters = 8.0
     MAX_POSE_CHANGE: units.meters = 1.0
     STDDEV_XY_COEFF: float = 0.08
     STDDEV_Z_COEFF: float = 0.1
@@ -218,18 +218,17 @@ class Services:
     STDDEV_TARGET_REPROJECTION_ERROR_SCALE_FACTOR: float = 2.5
     VALID_POSE_SENSOR_RESULT_TIMEOUT: units.seconds = 0.3
 
-  # TODO: calculate all launch metrics with physical testing on robot once available
   class Targeting:
     LAUNCH_METRICS: tuple[LaunchMetric, ...] = (
-      LaunchMetric(distance = 1.0, speed = 0.30),
-      LaunchMetric(distance = 2.0, speed = 0.35),
-      LaunchMetric(distance = 3.0, speed = 0.40),
-      LaunchMetric(distance = 4.0, speed = 0.45),
-      LaunchMetric(distance = 5.0, speed = 0.50),
-      LaunchMetric(distance = 6.0, speed = 0.55),
-      LaunchMetric(distance = 7.0, speed = 0.60),
-      LaunchMetric(distance = 8.0, speed = 0.65),
-      LaunchMetric(distance = 9.0, speed = 0.70)
+      LaunchMetric(distance = 1.0, speed = 0.26),
+      LaunchMetric(distance = 2.0, speed = 0.30),
+      LaunchMetric(distance = 3.0, speed = 0.38),
+      LaunchMetric(distance = 4.0, speed = 0.46),
+      LaunchMetric(distance = 5.0, speed = 0.54),
+      LaunchMetric(distance = 6.0, speed = 0.62),
+      LaunchMetric(distance = 7.0, speed = 0.68),
+      LaunchMetric(distance = 8.0, speed = 0.76),
+      LaunchMetric(distance = 9.0, speed = 0.84)
     )
 
   class Lights:
@@ -293,16 +292,20 @@ class Game:
 
     TARGETS: dict[Alliance, dict[Target, Pose3d]] = {
       Alliance.BLUE: {
+        Target.SCORE_RIGHT: Pose3d(2.80, 1.60, 0, Rotation3d(Rotation2d.fromDegrees(0))),
+        Target.SCORE_LEFT: Pose3d(2.80, 5.10, 0, Rotation3d(Rotation2d.fromDegrees(0))),
         Target.STABLE_RIGHT: Pose3d(8.30, 1.65, 0, Rotation3d(Rotation2d.fromDegrees(0))),
         Target.STABLE_LEFT: Pose3d(8.30, 5.15, 0, Rotation3d(Rotation2d.fromDegrees(0))),
-        Target.HAYBINE_RIGHT: Pose3d(1.00, 0.60, 0, Rotation3d(Rotation2d.fromDegrees(0))),
-        Target.HAYBINE_LEFT: Pose3d(1.00, 7.50, 0, Rotation3d(Rotation2d.fromDegrees(0))),
+        Target.HAYBINE_RIGHT: Pose3d(0.80, 1.30, 0, Rotation3d(Rotation2d.fromDegrees(90.0))),
+        Target.HAYBINE_LEFT: Pose3d(1.15, 6.99, 0, Rotation3d(Rotation2d.fromDegrees(-35.0))),
         Target.CROP_CIRCLE_RIGHT: Pose3d(1.75, 2.35, 0, Rotation3d(Rotation2d.fromDegrees(-6.5))),
         Target.CROP_CIRCLE_LEFT: Pose3d(1.75, 5.70, 0, Rotation3d(Rotation2d.fromDegrees(-5.0))),
         Target.BALE_RIGHT: Pose3d(2.40, 2.35, 0, Rotation3d(Rotation2d.fromDegrees(0))),
         Target.BALE_LEFT: Pose3d(2.40, 5.70, 0, Rotation3d(Rotation2d.fromDegrees(0)))
       },
       Alliance.RED: {
+        Target.SCORE_RIGHT: Pose3d(11.90, 6.40, 0, Rotation3d(Rotation2d.fromDegrees(0))),
+        Target.SCORE_LEFT: Pose3d(11.90, 2.90, 0, Rotation3d(Rotation2d.fromDegrees(0))),
         Target.STABLE_RIGHT: Pose3d(8.30, 6.45, 0, Rotation3d(Rotation2d.fromDegrees(180.0))),
         Target.STABLE_LEFT: Pose3d(8.30, 2.95, 0, Rotation3d(Rotation2d.fromDegrees(180.0))),
         Target.HAYBINE_RIGHT: Pose3d(15.50, 7.50, 0, Rotation3d(Rotation2d.fromDegrees(180.0))),
