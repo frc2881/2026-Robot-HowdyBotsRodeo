@@ -22,9 +22,7 @@ class Launcher(Subsystem):
     self._launcherLeader = CatapultModule(self._constants.LAUNCHER_LEADER_CONFIG)
     self._launcherFollower = FollowerControlModule(self._constants.LAUNCHER_FOLLOWER_CONFIG)
 
-    self.setDefaultCommand(self._launcherLeader.retract(self))
-
-    SmartDashboard.putNumber("Robot/Launcher/TestSpeed", 0.5)
+    SmartDashboard.putNumber("Robot/Launcher/TestSpeed", 0.3)
 
   def periodic(self) -> None:
     self._updateTelemetry()
@@ -32,14 +30,14 @@ class Launcher(Subsystem):
   def launch(self, getSpeed: Callable[[], units.percent]) -> Command:
     return self._launcherLeader.launch(lambda: getSpeed(), self)
 
+  def retract(self) -> Command:
+    return self._launcherLeader.retract(self)
+
   def test(self) -> Command:
     return self._launcherLeader.launch(lambda: SmartDashboard.getNumber("Robot/Launcher/TestSpeed", 0), self)
 
-  def isReady(self) -> bool:
+  def isLoaded(self) -> bool:
     return self._getLauncherSensorHasTarget()
-
-  def isRetracted(self) -> bool:
-    return self._launcherLeader.isRetracted()
 
   def resetToHome(self) -> Command:
     return self._launcherLeader.resetToHome(self).withName("Launcher:ResetToHome")
@@ -54,4 +52,4 @@ class Launcher(Subsystem):
     self._launcherLeader.reset()
 
   def _updateTelemetry(self) -> None:
-    telemetry.log(f'{self._telemetryName}/IsRetracted', self.isRetracted())
+    pass

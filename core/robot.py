@@ -16,7 +16,7 @@ from core.services.localization import Localization
 from core.services.targeting import Targeting
 from core.services.match import Match
 from core.services.lights import Lights
-from core.classes import Target
+from core.classes import Target, AutoPath
 import core.constants as constants
 
 class RobotCore:
@@ -75,19 +75,18 @@ class RobotCore:
       .withName("HomingButton:Pressed")
     )
 
-  # TODO: implement driver commands for robot functions (align to target, drive to target)
   def _setupDriver(self) -> None:
     self.drive.setDefaultCommand(self.drive.drive(self.driver.getLeftY, self.driver.getLeftX, self.driver.getRightX))
     self.driver.leftStick().whileTrue(self.drive.lockSwerveModules())
     # self.driver.rightStick().whileTrue(cmd.none())
-    self.driver.leftTrigger().whileTrue(self.game.alignToTargetPoseAndScore(Target.SCORE_LEFT))
-    self.driver.rightTrigger().whileTrue(self.game.alignToTargetPoseAndScore(Target.SCORE_RIGHT))
-    self.driver.leftBumper().whileTrue(self.game.alignToTargetHeadingAndScore(Target.STABLE_LEFT))
-    self.driver.rightBumper().whileTrue(self.game.alignToTargetHeadingAndScore(Target.STABLE_RIGHT))
+    self.driver.leftTrigger().whileTrue(self.game.scoreLeft())
+    self.driver.rightTrigger().whileTrue(self.game.scoreRight())
+    self.driver.leftBumper().whileTrue(self.auto.followPath(AutoPath.HAYBINE_LEFT))
+    self.driver.rightBumper().whileTrue(self.auto.followPath(AutoPath.HAYBINE_RIGHT))
     # self.driver.a().whileTrue(cmd.none())
-    self.driver.b().whileTrue(self.game.alignRobotToTargetPose(Target.HAYBINE_RIGHT))
+    # self.driver.b().whileTrue(cmd.none())
     # self.driver.y().whileTrue(cmd.none())
-    self.driver.x().whileTrue(self.game.alignRobotToTargetPose(Target.HAYBINE_LEFT))
+    # self.driver.x().whileTrue(cmd.none())
     self.driver.povLeft().whileTrue(self.game.alignRobotToTargetPose(Target.BALE_LEFT))
     self.driver.povRight().whileTrue(self.game.alignRobotToTargetPose(Target.BALE_RIGHT))
     # self.driver.povUp().whileTrue(cmd.none())
@@ -95,14 +94,13 @@ class RobotCore:
     # self.driver.start().whileTrue(cmd.none())
     self.driver.back().debounce(0.5).whileTrue(self.game.resetGyro())
 
-  # TODO: implement operator commands for robot functions (intake, launcher, homing if needed)
   def _setupOperator(self) -> None:
     # self.operator.leftStick().whileTrue(cmd.none())
     # self.operator.rightStick().whileTrue(cmd.none())
-    self.operator.leftTrigger().whileTrue(self.game.load())
-    # self.operator.rightTrigger().whileTrue(self.launcher.test())
-    self.operator.leftBumper().whileTrue(self.game.hold())
-    self.operator.rightBumper().whileTrue(self.game.place())
+    self.operator.leftTrigger().whileTrue(self.game.loadLauncher())
+    self.operator.rightTrigger().whileTrue(self.launcher.test())
+    self.operator.leftBumper().whileTrue(self.game.holdHay())
+    self.operator.rightBumper().whileTrue(self.game.placeHay())
     # self.operator.a().whileTrue(cmd.none())
     # self.operator.b().whileTrue(cmd.none())
     # self.operator.y().whileTrue(cmd.none())

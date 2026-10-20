@@ -7,6 +7,7 @@ import navx
 from rev import SparkLowLevel, AbsoluteEncoderConfig
 from pathplannerlib.config import RobotConfig
 from pathplannerlib.controller import PPHolonomicDriveController, PIDConstants
+from pathplannerlib.path import FlippingUtil
 from lib import logger, telemetry, utils
 from lib.classes import (
   RobotType,
@@ -77,7 +78,7 @@ class Subsystems:
       translationMaxVelocity = 2.0,
       translationPositionTolerance = 0.25,
       rotationControlPID = PID(4.0, 0, 0),
-      rotationMaxVelocity = 360.0,
+      rotationMaxVelocity = 540.0,
       rotationPositionTolerance = 3.0
     )
 
@@ -160,7 +161,7 @@ class Subsystems:
       telemetryName = "Robot/Subsystems/Intake/Rollers/Top"
     )
 
-    ARM_INTAKE_POSITION: float = 20.5 # TODO: test/calculate/validate
+    ARM_INTAKE_POSITION: float = 20.5
     ROLLERS_BOTTOM_INTAKE_SPEED: units.percent = 0.5
     ROLLERS_TOP_INTAKE_SPEED: units.percent = 0.2
     ROLLERS_HOLD_SPEED: units.percent = 0.15
@@ -191,8 +192,8 @@ class Subsystems:
       allowedProfileError = 0.1,
       homingSpeed = 0.1,
       retractSpeed = 0.05,
-      launchPosition = 5.00,
-      positionTolerance = 0.5,
+      launchPosition = 5.4,
+      positionTolerance = 0.1,
       telemetryName = "Robot/Subsystems/Launcher/Leader"
     )
 
@@ -292,38 +293,30 @@ class Game:
 
     TARGETS: dict[Alliance, dict[Target, Pose3d]] = {
       Alliance.BLUE: {
-        Target.SCORE_RIGHT: Pose3d(2.80, 1.60, 0, Rotation3d(Rotation2d.fromDegrees(0))),
-        Target.SCORE_LEFT: Pose3d(2.80, 5.10, 0, Rotation3d(Rotation2d.fromDegrees(0))),
+        Target.SCORE_RIGHT: Pose3d(4.00, 1.65, 0, Rotation3d(Rotation2d.fromDegrees(0))),
+        Target.SCORE_LEFT: Pose3d(4.00, 5.15, 0, Rotation3d(Rotation2d.fromDegrees(0))),
         Target.STABLE_RIGHT: Pose3d(8.30, 1.65, 0, Rotation3d(Rotation2d.fromDegrees(0))),
         Target.STABLE_LEFT: Pose3d(8.30, 5.15, 0, Rotation3d(Rotation2d.fromDegrees(0))),
-        Target.HAYBINE_RIGHT: Pose3d(0.80, 1.30, 0, Rotation3d(Rotation2d.fromDegrees(90.0))),
-        Target.HAYBINE_LEFT: Pose3d(1.15, 6.99, 0, Rotation3d(Rotation2d.fromDegrees(-35.0))),
-        Target.CROP_CIRCLE_RIGHT: Pose3d(1.75, 2.35, 0, Rotation3d(Rotation2d.fromDegrees(-6.5))),
-        Target.CROP_CIRCLE_LEFT: Pose3d(1.75, 5.70, 0, Rotation3d(Rotation2d.fromDegrees(-5.0))),
+        Target.CROP_CIRCLE_RIGHT: Pose3d(1.75, 2.35, 0, Rotation3d(Rotation2d.fromDegrees(0))),
+        Target.CROP_CIRCLE_LEFT: Pose3d(1.75, 5.70, 0, Rotation3d(Rotation2d.fromDegrees(0))),
         Target.BALE_RIGHT: Pose3d(2.40, 2.35, 0, Rotation3d(Rotation2d.fromDegrees(0))),
         Target.BALE_LEFT: Pose3d(2.40, 5.70, 0, Rotation3d(Rotation2d.fromDegrees(0)))
       },
-      Alliance.RED: {
-        Target.SCORE_RIGHT: Pose3d(11.90, 6.40, 0, Rotation3d(Rotation2d.fromDegrees(0))),
-        Target.SCORE_LEFT: Pose3d(11.90, 2.90, 0, Rotation3d(Rotation2d.fromDegrees(0))),
-        Target.STABLE_RIGHT: Pose3d(8.30, 6.45, 0, Rotation3d(Rotation2d.fromDegrees(180.0))),
-        Target.STABLE_LEFT: Pose3d(8.30, 2.95, 0, Rotation3d(Rotation2d.fromDegrees(180.0))),
-        Target.HAYBINE_RIGHT: Pose3d(15.50, 7.50, 0, Rotation3d(Rotation2d.fromDegrees(180.0))),
-        Target.HAYBINE_LEFT: Pose3d(15.50, 0.60, 0, Rotation3d(Rotation2d.fromDegrees(180.0))),
-        Target.CROP_CIRCLE_RIGHT: Pose3d(14.80, 5.70, 0, Rotation3d(Rotation2d.fromDegrees(173.5))),
-        Target.CROP_CIRCLE_LEFT: Pose3d(14.80, 2.35, 0, Rotation3d(Rotation2d.fromDegrees(175.0))),
-        Target.BALE_RIGHT: Pose3d(14.15, 5.70, 0, Rotation3d(Rotation2d.fromDegrees(180.0))),
-        Target.BALE_LEFT: Pose3d(14.15, 2.35, 0, Rotation3d(Rotation2d.fromDegrees(180.0))),
-      }
+      Alliance.RED: {}
     }
+
+    for target in TARGETS[Alliance.BLUE]:
+      pose = FlippingUtil.flipFieldPose(TARGETS[Alliance.BLUE][target].toPose2d())
+      TARGETS[Alliance.RED][target] = Pose3d(pose.X(), pose.Y(), TARGETS[Alliance.BLUE][target].Z(), Rotation3d(pose.rotation()))
 
     ZONES: dict[Alliance, dict[Zone, Rectangle2d]] = {
       Alliance.BLUE: {
         Zone.ALLIANCE_ZONE_RIGHT: Rectangle2d(Translation2d(0, 0), Translation2d(8.27, 4.035)),
         Zone.ALLIANCE_ZONE_LEFT: Rectangle2d(Translation2d(0, 4.036), Translation2d(8.27, 8.07))
       },
-      Alliance.RED: {
-        Zone.ALLIANCE_ZONE_RIGHT: Rectangle2d(Translation2d(8.28, 4.036), Translation2d(16.54, 8.07)),
-        Zone.ALLIANCE_ZONE_LEFT: Rectangle2d(Translation2d(8.28, 0), Translation2d(16.54, 4.035))
-      }
+      Alliance.RED: {}
     }
+
+    for zone in ZONES[Alliance.BLUE]:
+      rectangle = ZONES[Alliance.BLUE][zone]
+      ZONES[Alliance.RED][zone] = Rectangle2d(FlippingUtil.flipFieldPose(rectangle.center()), rectangle.xwidth, rectangle.ywidth)

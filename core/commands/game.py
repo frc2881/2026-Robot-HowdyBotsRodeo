@@ -3,8 +3,8 @@ from wpilib import RobotBase
 from wpimath import units
 from commands2 import Command, cmd
 from lib import logger, telemetry, utils
-from lib.classes import ControllerRumbleMode, ControllerRumblePattern
-from core.classes import Target
+from lib.classes import ControllerRumbleMode, ControllerRumblePattern, Position
+from core.classes import Target, Zone
 import core.constants as constants
 if TYPE_CHECKING: from core.robot import RobotCore
 
@@ -30,72 +30,69 @@ class Game:
       .withName(f'Game:AlignRobotToTargetHeading:{ target.name }')
     )
 
-  def extend(self) -> Command:
+  def extendIntake(self) -> Command:
     return (
       self._robot.intake.extend()
-      .withName("Game:Extend")
+      .withName("Game:ExtendIntake")
     )
 
-  def load(self) -> Command:
+  def loadLauncher(self) -> Command:
     return (
-      self._robot.intake.run_()
-      .until(lambda: self.isReadyToLaunch())
+      self._robot.launcher.retract()
+      .andThen(self._robot.intake.run_().until(lambda: self._robot.launcher.isLoaded()))
       .andThen(self.rumbleControllers(ControllerRumbleMode.BOTH))
-      .withName("Game:Load")
+      .withName("Game:LoadLauncher")
     )
 
-  def alignToTargetPoseAndScore(self, target: Target) -> Command:
+  def scoreRight(self) -> Command:
     return (
-      (
-        self.alignRobotToTargetPose(target)
-        .andThen(cmd.waitSeconds(0.5))
-        .andThen(
-          self._robot.launcher.launch(lambda: self._robot.targeting.getScoringTargetInfo(Target.STABLE_RIGHT if target == Target.SCORE_RIGHT else Target.STABLE_LEFT).speed)
-          .deadlineFor(self._robot.intake.run_())
-        )
-        .andThen(self.rumbleControllers(ControllerRumbleMode.BOTH))
+      cmd.either(
+        self.alignRobotToTargetPose(Target.SCORE_RIGHT),
+        self.alignRobotToTargetHeading(Target.STABLE_RIGHT).until(lambda: self._robot.drive.isAlignedToTargetHeading()),
+        lambda: self._robot.localization.getRobotZone() == Zone.ALLIANCE_ZONE_RIGHT
       )
-      .withName("Game:Score")
+      .andThen(cmd.waitSeconds(0.5))
+      .andThen(self._robot.launcher.launch(lambda: self._robot.targeting.getScoringTargetInfo(Target.STABLE_RIGHT).speed))
+      .andThen(self._robot.launcher.retract())
+      .andThen(self.rumbleControllers(ControllerRumbleMode.BOTH))
+      .withName("Game:ScoreRight")
     )
 
-  def alignToTargetHeadingAndScore(self, target: Target) -> Command:
+  def scoreLeft(self) -> Command:
     return (
-      (
-        self.alignRobotToTargetHeading(target).until(lambda: self._robot.drive.isAlignedToTargetHeading())
-        .andThen(cmd.waitSeconds(0.5))
-        .andThen(
-          self._robot.launcher.launch(lambda: self._robot.targeting.getScoringTargetInfo(target).speed)
-          .deadlineFor(self._robot.intake.run_())
-        )
-        .andThen(self.rumbleControllers(ControllerRumbleMode.BOTH))
+      cmd.either(
+        self.alignRobotToTargetPose(Target.SCORE_LEFT),
+        self.alignRobotToTargetHeading(Target.STABLE_LEFT).until(lambda: self._robot.drive.isAlignedToTargetHeading()),
+        lambda: self._robot.localization.getRobotZone() == Zone.ALLIANCE_ZONE_LEFT
       )
-      .withName("Game:Score")
+      .andThen(cmd.waitSeconds(0.5))
+      .andThen(self._robot.launcher.launch(lambda: self._robot.targeting.getScoringTargetInfo(Target.STABLE_LEFT).speed))
+      .andThen(self._robot.launcher.retract())
+      .andThen(self.rumbleControllers(ControllerRumbleMode.BOTH))
+      .withName("Game:ScoreLeft")
     )
 
-  def hold(self) -> Command:
+  def holdHay(self) -> Command:
     return (
       self._robot.intake.hold()
       .until(lambda: self._robot.intake.isHolding())
-      .withName("Game:Hold")
+      .withName("Game:HoldHay")
     )
 
-  def place(self) -> Command:
+  def placeHay(self) -> Command:
     return (
       self._robot.intake.place()
-      .withName("Game:Place")
+      .withName("Game:PlaceHay")
     )
 
-  def launchOverride(self) -> Command:
+  def launchTest(self) -> Command:
     return (
       self._robot.launcher.test()
       .onlyIf(lambda: self.isReadyToLaunch())
     )
 
-  def _isReadyToLoad(self) -> bool:
-    return self._robot.launcher.isRetracted()
-
   def isReadyToLaunch(self) -> bool:
-    return self._robot.launcher.isReady() and self._robot.intake.isExtended()
+    return self._robot.intake.isExtended() and self._robot.launcher.isLoaded()
   
   def resetGyro(self) -> Command:
     return (

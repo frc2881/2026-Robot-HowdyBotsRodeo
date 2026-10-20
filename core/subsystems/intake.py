@@ -70,7 +70,7 @@ class Intake(Subsystem):
     self._armLeader.setPosition(self._constants.ARM_INTAKE_POSITION)
 
   def isExtended(self) -> bool:
-    return self._armLeader.getPosition() > self._constants.ARM_INTAKE_POSITION * 0.9
+    return self._armLeader.isAtTargetPosition() or self._armLeader.getPosition() >= self._constants.ARM_INTAKE_POSITION * 0.95
   
   def isRunning(self) -> bool:
     return self._rollersBottom.getSpeed() > 0.1 or self._rollersTop.getSpeed() > 0.1
