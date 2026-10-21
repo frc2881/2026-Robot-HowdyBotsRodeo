@@ -1,9 +1,7 @@
 from typing import Callable
-from wpilib import SmartDashboard
 from wpimath import units
 from commands2 import Subsystem, Command
 from lib import logger, telemetry, utils
-from lib.classes import IdleMode
 from lib.modules.catapult import CatapultModule
 from lib.modules.follower_control import FollowerControlModule
 import core.constants as constants
@@ -22,8 +20,6 @@ class Launcher(Subsystem):
     self._launcherLeader = CatapultModule(self._constants.LAUNCHER_LEADER_CONFIG)
     self._launcherFollower = FollowerControlModule(self._constants.LAUNCHER_FOLLOWER_CONFIG)
 
-    SmartDashboard.putNumber("Robot/Launcher/TestSpeed", 0.3)
-
   def periodic(self) -> None:
     self._updateTelemetry()
 
@@ -32,9 +28,6 @@ class Launcher(Subsystem):
 
   def retract(self) -> Command:
     return self._launcherLeader.retract(self)
-
-  def test(self) -> Command:
-    return self._launcherLeader.launch(lambda: SmartDashboard.getNumber("Robot/Launcher/TestSpeed", 0), self)
 
   def isLoaded(self) -> bool:
     return self._getLauncherSensorHasTarget()
