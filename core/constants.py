@@ -168,7 +168,7 @@ class Subsystems:
     ROLLERS_PLACE_SPEED: units.percent = 0.15
 
     ROLLERS_CURRENT_SENSOR_CONFIG = CurrentSensorConfig(
-      targetCurrent = 20,
+      targetCurrent = 35,
       changeTime = 0.2,
       telemetryName = "Robot/Sensors/Current/Intake/Rollers"
     )
@@ -221,15 +221,15 @@ class Services:
 
   class Targeting:
     LAUNCH_METRICS: tuple[LaunchMetric, ...] = (
-      LaunchMetric(distance = 1.0, speed = 0.26),
-      LaunchMetric(distance = 2.0, speed = 0.30),
-      LaunchMetric(distance = 3.0, speed = 0.38),
-      LaunchMetric(distance = 4.0, speed = 0.46),
-      LaunchMetric(distance = 5.0, speed = 0.54),
-      LaunchMetric(distance = 6.0, speed = 0.62),
-      LaunchMetric(distance = 7.0, speed = 0.68),
-      LaunchMetric(distance = 8.0, speed = 0.76),
-      LaunchMetric(distance = 9.0, speed = 0.84)
+      LaunchMetric(distance = 1.5, speed = 0.35),
+      LaunchMetric(distance = 2.5, speed = 0.40),
+      LaunchMetric(distance = 3.5, speed = 0.45),
+      LaunchMetric(distance = 4.5, speed = 0.50),
+      LaunchMetric(distance = 5.5, speed = 0.55),
+      LaunchMetric(distance = 6.5, speed = 0.60),
+      LaunchMetric(distance = 7.5, speed = 0.65),
+      LaunchMetric(distance = 8.5, speed = 0.70),
+      LaunchMetric(distance = 9.5, speed = 0.75)
     )
 
   class Lights:
@@ -293,14 +293,14 @@ class Game:
 
     TARGETS: dict[Alliance, dict[Target, Pose3d]] = {
       Alliance.BLUE: {
-        Target.SCORE_RIGHT: Pose3d(4.00, 1.65, 0, Rotation3d(Rotation2d.fromDegrees(0))),
-        Target.SCORE_LEFT: Pose3d(4.00, 5.15, 0, Rotation3d(Rotation2d.fromDegrees(0))),
+        Target.SCORE_RIGHT: Pose3d(5.80, 1.65, 0, Rotation3d(Rotation2d.fromDegrees(0))),
+        Target.SCORE_LEFT: Pose3d(5.80, 5.15, 0, Rotation3d(Rotation2d.fromDegrees(0))),
         Target.STABLE_RIGHT: Pose3d(8.30, 1.65, 0, Rotation3d(Rotation2d.fromDegrees(0))),
         Target.STABLE_LEFT: Pose3d(8.30, 5.15, 0, Rotation3d(Rotation2d.fromDegrees(0))),
-        Target.CROP_CIRCLE_RIGHT: Pose3d(1.75, 2.35, 0, Rotation3d(Rotation2d.fromDegrees(0))),
-        Target.CROP_CIRCLE_LEFT: Pose3d(1.75, 5.70, 0, Rotation3d(Rotation2d.fromDegrees(0))),
-        Target.BALE_RIGHT: Pose3d(2.40, 2.35, 0, Rotation3d(Rotation2d.fromDegrees(0))),
-        Target.BALE_LEFT: Pose3d(2.40, 5.70, 0, Rotation3d(Rotation2d.fromDegrees(0)))
+        Target.CROP_CIRCLE_RIGHT: Pose3d(1.68, 2.42, 0, Rotation3d(Rotation2d.fromDegrees(140.0))),
+        Target.CROP_CIRCLE_LEFT: Pose3d(1.70, 5.70, 0, Rotation3d(Rotation2d.fromDegrees(-120.0))),
+        Target.BALE_RIGHT: Pose3d(1.25, 2.78, 0, Rotation3d(Rotation2d.fromDegrees(140.0))),
+        Target.BALE_LEFT: Pose3d(1.38, 5.12, 0, Rotation3d(Rotation2d.fromDegrees(-120.0)))
       },
       Alliance.RED: {}
     }

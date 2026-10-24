@@ -44,7 +44,7 @@ class Game:
     return (
       cmd.either(
         self.alignRobotToTargetPose(Target.SCORE_RIGHT),
-        self.alignRobotToTargetHeading(Target.STABLE_RIGHT).until(lambda: self._robot.drive.isAlignedToTargetHeading()),
+        self.alignRobotToTargetHeading(Target.STABLE_RIGHT).withTimeout(0.75),
         lambda: self._robot.localization.getRobotZone() == Zone.ALLIANCE_ZONE_RIGHT
       )
       .andThen(cmd.waitSeconds(0.5))
@@ -55,11 +55,10 @@ class Game:
 
   def scoreLeft(self) -> Command:
     return (
-      cmd.either(
-        self.alignRobotToTargetPose(Target.SCORE_LEFT),
-        self.alignRobotToTargetHeading(Target.STABLE_LEFT).until(lambda: self._robot.drive.isAlignedToTargetHeading()),
-        lambda: self._robot.localization.getRobotZone() == Zone.ALLIANCE_ZONE_LEFT
-      )
+      cmd.select({
+        Zone.ALLIANCE_ZONE_LEFT: self.alignRobotToTargetPose(Target.SCORE_LEFT),
+        Zone.ALLIANCE_ZONE_RIGHT: self.alignRobotToTargetHeading(Target.STABLE_LEFT).until(lambda: self._robot.drive.isAlignedToTargetHeading())
+      }, lambda: self._robot.localization.getRobotZone())
       .andThen(cmd.waitSeconds(0.5))
       .andThen(self._robot.launcher.launch(lambda: self._robot.targeting.getScoringTargetInfo(Target.STABLE_LEFT).speed))
       .andThen(self._robot.launcher.retract())
