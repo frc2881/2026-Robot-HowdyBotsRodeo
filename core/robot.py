@@ -78,20 +78,20 @@ class RobotCore:
   def _setupDriver(self) -> None:
     self.drive.setDefaultCommand(self.drive.drive(self.driver.getLeftY, self.driver.getLeftX, self.driver.getRightX))
     self.driver.leftStick().whileTrue(self.drive.lockSwerveModules())
-    # self.driver.rightStick().whileTrue(cmd.none())
+    self.driver.rightStick().whileTrue(self.game.lockRobotToTargetHeading(Target.STABLE_RIGHT))
     self.driver.leftTrigger().whileTrue(self.game.scoreLeft())
     self.driver.rightTrigger().whileTrue(self.game.scoreRight())
-    self.driver.leftBumper().whileTrue(self.auto.followPath(AutoPath.HAYBINE_LEFT))
-    self.driver.rightBumper().whileTrue(self.auto.followPath(AutoPath.HAYBINE_RIGHT))
+    self.driver.leftBumper().whileTrue(self.game.load())
+    self.driver.rightBumper().whileTrue(self.game.hold())
     # self.driver.a().whileTrue(cmd.none())
-    self.driver.b().whileTrue(self.game.alignRobotToNearestTargetPose([ Target.BALE_RIGHT, Target.BALE_LEFT ]))
+    self.driver.b().whileTrue(self.game.place())
     # self.driver.y().whileTrue(cmd.none())
-    self.driver.x().whileTrue(self.game.alignRobotToNearestTargetPose([ Target.CROP_CIRCLE_RIGHT, Target.CROP_CIRCLE_LEFT ]))
-    # self.driver.povLeft().whileTrue(cmd.none())
-    # self.driver.povRight().whileTrue(cmd.none())
-    self.driver.povUp().debounce(0.5).whileTrue(self.game.testLauncher())
-    # self.driver.povDown().whileTrue(cmd.none())
-    # self.driver.start().whileTrue(cmd.none())
+    # self.driver.x().whileTrue(cmd.none())
+    self.driver.povLeft().whileTrue(self.auto.followPath(AutoPath.HAYBINE_LEFT))
+    self.driver.povRight().whileTrue(self.auto.followPath(AutoPath.HAYBINE_RIGHT))
+    self.driver.povUp().whileTrue(self.game.alignRobotToNearestTargetPose([ Target.CROP_CIRCLE_RIGHT, Target.CROP_CIRCLE_LEFT ]))
+    self.driver.povDown().whileTrue(self.game.alignRobotToNearestTargetPose([ Target.BALE_RIGHT, Target.BALE_LEFT ]))
+    self.driver.start().debounce(0.5).whileTrue(self.game.testLauncher())
     self.driver.back().debounce(0.5).whileTrue(self.game.resetGyro())
 
   def _setupOperator(self) -> None:
@@ -111,6 +111,7 @@ class RobotCore:
     self.operator.povDown().debounce(0.5).whileTrue(self.intake.resetToHome())
     # self.operator.start().whileTrue(cmd.none())
     # self.operator.back().whileTrue(cmd.none())
+    pass
 
   def _initTelemetry(self) -> None:
     telemetry.log("Game/Robot/Type", constants.Game.Robot.TYPE.name)

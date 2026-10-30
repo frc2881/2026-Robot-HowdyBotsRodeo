@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING
 from wpilib import RobotBase, SmartDashboard
 from commands2 import Command, cmd
 from lib import logger, telemetry, utils
-from lib.classes import ControllerRumbleMode, ControllerRumblePattern
+from lib.classes import Alignment, ControllerRumbleMode, ControllerRumblePattern
 from core.classes import Target, Zone
 import core.constants as constants
 if TYPE_CHECKING: from core.robot import RobotCore
@@ -11,22 +11,22 @@ class Game:
   def __init__(self, robot: "RobotCore") -> None:
     self._robot = robot
 
-    SmartDashboard.putNumber("Robot/Launcher/TestSpeed", 0.8)
+    SmartDashboard.putNumber("Robot/Launcher/TestSpeed", 0.4)
 
-  def alignRobotToTargetPose(self, target: Target, alignRotationOnly: bool = False) -> Command:
+  def alignRobotToTargetPose(self, target: Target, alignment = Alignment.POSE) -> Command:
     return (
-      self._robot.drive.alignToTargetPose(lambda: self._robot.localization.getRobotPose(), lambda: self._robot.targeting.getTargetPose(target), alignRotationOnly)
+      self._robot.drive.alignToTargetPose(lambda: self._robot.localization.getRobotPose(), lambda: self._robot.targeting.getTargetPose(target), alignment)
     ).withName(f'Game:AlignRobotToTargetPose:{ target.name }')
 
-  def alignRobotToNearestTargetPose(self, targets: list[Target], alignRotationOnly: bool = False) -> Command:
+  def alignRobotToNearestTargetPose(self, targets: list[Target], alignment = Alignment.POSE) -> Command:
     return (
-      self._robot.drive.alignToTargetPose(lambda: self._robot.localization.getRobotPose(), lambda: self._robot.targeting.getNearestTargetPose(targets), alignRotationOnly)
+      self._robot.drive.alignToTargetPose(lambda: self._robot.localization.getRobotPose(), lambda: self._robot.targeting.getNearestTargetPose(targets), alignment)
     ).withName("Game:AlignRobotToNearestTargetPose")
 
-  def alignRobotToTargetHeading(self, target: Target) -> Command:
+  def lockRobotToTargetHeading(self, target: Target) -> Command:
     return (
-      self._robot.drive.alignToTargetHeading(lambda: self._robot.localization.getRobotPose(), lambda: self._robot.targeting.getTargetPose(target))
-    ).withName(f'Game:AlignRobotToTargetHeading:{ target.name }')
+      self._robot.drive.lockToTargetHeading(lambda: self._robot.localization.getRobotPose(), lambda: self._robot.targeting.getTargetPose(target))
+    ).withName(f'Game:LockRobotToTargetHeading:{ target.name }')
 
   def extend(self) -> Command:
     return (
@@ -43,8 +43,8 @@ class Game:
   def scoreRight(self) -> Command:
     return (
       cmd.select({
-        Zone.ALLIANCE_ZONE_RIGHT: self.alignRobotToTargetPose(Target.SCORE_RIGHT),
-        Zone.ALLIANCE_ZONE_LEFT: self.alignRobotToTargetHeading(Target.STABLE_RIGHT).until(lambda: self._robot.drive.isAlignedToTargetHeading())
+        Zone.ALLIANCE_ZONE_RIGHT: self.alignRobotToTargetPose(Target.SCORE_RIGHT, Alignment.POSE),
+        Zone.ALLIANCE_ZONE_LEFT: self.alignRobotToTargetPose(Target.STABLE_RIGHT, Alignment.HEADING)
       }, lambda: self._robot.localization.getRobotZone())
       .andThen(cmd.waitSeconds(0.75))
       .andThen(self._robot.launcher.launch(lambda: self._robot.targeting.getScoringTargetInfo(Target.STABLE_RIGHT).speed))
@@ -55,8 +55,8 @@ class Game:
   def scoreLeft(self) -> Command:
     return (
       cmd.select({
-        Zone.ALLIANCE_ZONE_LEFT: self.alignRobotToTargetPose(Target.SCORE_LEFT),
-        Zone.ALLIANCE_ZONE_RIGHT: self.alignRobotToTargetHeading(Target.STABLE_LEFT).until(lambda: self._robot.drive.isAlignedToTargetHeading())
+        Zone.ALLIANCE_ZONE_LEFT: self.alignRobotToTargetPose(Target.SCORE_LEFT, Alignment.POSE),
+        Zone.ALLIANCE_ZONE_RIGHT: self.alignRobotToTargetPose(Target.STABLE_LEFT, Alignment.HEADING)
       }, lambda: self._robot.localization.getRobotZone())
       .andThen(cmd.waitSeconds(0.75))
       .andThen(self._robot.launcher.launch(lambda: self._robot.targeting.getScoringTargetInfo(Target.STABLE_LEFT).speed))

@@ -24,7 +24,8 @@ from lib.classes import (
   SwerveDriveModuleConfig, 
   SwerveDriveModuleLocation, 
   PoseAlignmentConstants,
-  HeadingAlignmentConstants,
+  HeadingLockConstants,
+  DriftCorrectionConstants,
   RelativePositionControlModuleConfig,
   VelocityControlModuleConfig,
   FollowerControlModuleConfig,
@@ -78,16 +79,16 @@ class Subsystems:
       translationMaxVelocity = 2.0,
       translationPositionTolerance = 0.25,
       rotationControlPID = PID(4.0, 0, 0),
-      rotationMaxVelocity = 360.0,
-      rotationPositionTolerance = 3.0
+      rotationMaxVelocity = 540.0,
+      rotationPositionTolerance = 2.0
     )
 
-    TARGET_HEADING_ALIGNMENT_CONSTANTS = HeadingAlignmentConstants(
+    TARGET_HEADING_LOCK_CONSTANTS = HeadingLockConstants(
       rotationControlPID = PID(0.01, 0, 0), 
-      rotationPositionTolerance = 2.5
+      rotationPositionTolerance = 2.0
     )
 
-    DRIFT_CORRECTION_CONSTANTS = HeadingAlignmentConstants(
+    DRIFT_CORRECTION_CONSTANTS = DriftCorrectionConstants(
       rotationControlPID = PID(0.01, 0, 0), 
       rotationPositionTolerance = 0.5
     )
@@ -248,7 +249,7 @@ class Sensors:
           Translation3d(x = units.inchesToMeters(13.36), y = units.inchesToMeters(1.09), z = units.inchesToMeters(11.27)),
           Rotation3d(roll = units.degreesToRadians(1.0), pitch = units.degreesToRadians(-20.0), yaw = units.degreesToRadians(20.0))
         ),
-        stream = "http://10.18.82.6:1182/?action=stream",
+        stream = "http://10.28.81.6:1182/?action=stream",
         aprilTagFieldLayout = _aprilTagFieldLayout,
         telemetryName = "Robot/Sensors/Pose"
       ),
@@ -258,7 +259,7 @@ class Sensors:
         Translation3d(x = units.inchesToMeters(13.36), y = units.inchesToMeters(-1.09), z = units.inchesToMeters(11.27)),
         Rotation3d(roll = units.degreesToRadians(-1.0), pitch = units.degreesToRadians(-20.0), yaw = units.degreesToRadians(-20.0))
       ),
-        stream = "http://10.18.82.6:1184/?action=stream",
+        stream = "http://10.28.81.6:1184/?action=stream",
         aprilTagFieldLayout = _aprilTagFieldLayout,
         telemetryName = "Robot/Sensors/Pose"
       )
@@ -271,7 +272,7 @@ class Sensors:
     )
 
 class Cameras:
-  DRIVER_STREAM = "http://10.18.82.6:1182/?action=stream"
+  DRIVER_STREAM = "http://10.28.81.6:1182/?action=stream"
 
 class Controllers:
   DRIVER_CONTROLLER_CONFIG = XboxControllerConfig(port = 0, inputDeadband = 0.1, telemetryName = "Robot/Controllers/Driver")
