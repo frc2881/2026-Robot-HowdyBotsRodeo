@@ -71,14 +71,14 @@ class Subsystems:
     SWERVE_DRIVE_KINEMATICS = SwerveDrive4Kinematics(*(c.chassisTranslation for c in SWERVE_DRIVE_MODULE_CONFIGS))
 
     TRANSLATION_MAX_VELOCITY: units.meters_per_second = lib.constants.Drive.Swerve.FREE_SPEEDS[_drivingMotorModel][_swerveDriveModuleGearKit] * 1.0
-    ROTATION_MAX_VELOCITY: units.degrees_per_second = 720.0
+    ROTATION_MAX_VELOCITY: units.degrees_per_second = 540.0
 
     TARGET_POSE_ALIGNMENT_CONSTANTS = PoseAlignmentConstants(
       translationControlPID = PID(4.0, 0, 0),
       translationMaxVelocity = 2.0,
       translationPositionTolerance = 0.25,
       rotationControlPID = PID(4.0, 0, 0),
-      rotationMaxVelocity = 540.0,
+      rotationMaxVelocity = 360.0,
       rotationPositionTolerance = 3.0
     )
 
@@ -211,7 +211,7 @@ class Services:
   class Localization:
     MAX_TARGET_AMBIGUITY: units.percent = 0.2
     MAX_TARGET_REPROJECTION_ERROR: float = 1.0
-    MAX_TARGET_DISTANCE: units.meters = 8.0
+    MAX_TARGET_DISTANCE: units.meters = 5.5
     MAX_POSE_CHANGE: units.meters = 1.0
     STDDEV_XY_COEFF: float = 0.08
     STDDEV_Z_COEFF: float = 0.1
@@ -221,15 +221,15 @@ class Services:
 
   class Targeting:
     LAUNCH_METRICS: tuple[LaunchMetric, ...] = (
-      LaunchMetric(distance = 1.5, speed = 0.35),
-      LaunchMetric(distance = 2.5, speed = 0.40),
-      LaunchMetric(distance = 3.5, speed = 0.45),
-      LaunchMetric(distance = 4.5, speed = 0.50),
-      LaunchMetric(distance = 5.5, speed = 0.55),
-      LaunchMetric(distance = 6.5, speed = 0.60),
-      LaunchMetric(distance = 7.5, speed = 0.65),
-      LaunchMetric(distance = 8.5, speed = 0.70),
-      LaunchMetric(distance = 9.5, speed = 0.75)
+      LaunchMetric(distance = 1.5, speed = 0.34),
+      LaunchMetric(distance = 2.5, speed = 0.39),
+      LaunchMetric(distance = 3.5, speed = 0.44),
+      LaunchMetric(distance = 4.5, speed = 0.49),
+      LaunchMetric(distance = 5.5, speed = 0.54),
+      LaunchMetric(distance = 6.5, speed = 0.61),
+      LaunchMetric(distance = 7.5, speed = 0.66),
+      LaunchMetric(distance = 8.5, speed = 0.71),
+      LaunchMetric(distance = 9.5, speed = 0.76)
     )
 
   class Lights:

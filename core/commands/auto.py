@@ -67,25 +67,29 @@ class Auto:
 
   def _auto_RIGHT_SCORE_1(self) -> Command:
     return cmd.sequence(
-      self._robot.game.extend().deadlineFor(self._robot.game.alignRobotToTargetPose(Target.SCORE_RIGHT)),
+      self._robot.game.extend(),
+      self._robot.game.alignRobotToTargetPose(Target.SCORE_RIGHT),
       self._robot.game.scoreRight(),
       self._robot.game.alignRobotToTargetPose(Target.CROP_CIRCLE_RIGHT)
     ).withName("Auto:RIGHT_SCORE_1")
 
   def _auto_RIGHT_SCORE_2(self) -> Command:
     return cmd.sequence(
-      self._robot.game.extend().deadlineFor(self._robot.game.alignRobotToTargetPose(Target.SCORE_RIGHT)),
+      self._robot.game.extend(),
+      self._robot.game.alignRobotToTargetPose(Target.SCORE_RIGHT),
       self._robot.game.scoreRight(),
-      self._robot.game.load().deadlineFor(self.followPath(AutoPath.RIGHT_PICKUP_2)),
+      self._robot.game.load().deadlineFor(self.followPath(AutoPath.RIGHT_PICKUP_2)).withTimeout(7.0),
+      
       self._robot.game.scoreRight(),
       self._robot.game.alignRobotToTargetPose(Target.CROP_CIRCLE_RIGHT)
     ).withName("Auto:RIGHT_SCORE_2")
 
   def _auto_RIGHT_SCORE_3(self) -> Command:
     return cmd.sequence(
-      self._robot.game.extend().deadlineFor(self._robot.game.alignRobotToTargetPose(Target.SCORE_RIGHT)),
+      self._robot.game.extend(),
+      self._robot.game.alignRobotToTargetPose(Target.SCORE_RIGHT),
       self._robot.game.scoreRight(),
-      self._robot.game.load().deadlineFor(self.followPath(AutoPath.RIGHT_PICKUP_2)),
+      self._robot.game.load().deadlineFor(self.followPath(AutoPath.RIGHT_PICKUP_2)).withTimeout(7.0),
       self._robot.game.scoreRight(),
       self._robot.game.load().deadlineFor(self.followPath(AutoPath.RIGHT_PICKUP_3)),
       self._robot.game.scoreRight(),
@@ -94,25 +98,28 @@ class Auto:
 
   def _auto_LEFT_SCORE_1(self) -> Command:
     return cmd.sequence(
-      self._robot.game.extend().deadlineFor(self._robot.game.alignRobotToTargetPose(Target.SCORE_LEFT)),
+      self._robot.game.extend(),
+      self._robot.game.alignRobotToTargetPose(Target.SCORE_LEFT),
       self._robot.game.scoreLeft(),
       self._robot.game.alignRobotToTargetPose(Target.CROP_CIRCLE_LEFT)
     ).withName("Auto:LEFT_SCORE_1")
 
   def _auto_LEFT_SCORE_2(self) -> Command:
     return cmd.sequence(
-      self._robot.game.extend().deadlineFor(self._robot.game.alignRobotToTargetPose(Target.SCORE_LEFT)),
+      self._robot.game.extend(),
+      self._robot.game.alignRobotToTargetPose(Target.SCORE_LEFT),
       self._robot.game.scoreLeft(),
-      self._robot.game.load().deadlineFor(self.followPath(AutoPath.LEFT_PICKUP_2)),
+      self._robot.game.load().deadlineFor(self.followPath(AutoPath.LEFT_PICKUP_2)).withTimeout(8.0),
       self._robot.game.scoreLeft(),
       self._robot.game.alignRobotToTargetPose(Target.CROP_CIRCLE_LEFT)
     ).withName("Auto:LEFT_SCORE_2")
 
   def _auto_LEFT_SCORE_3(self) -> Command:
     return cmd.sequence(
-      self._robot.game.extend().deadlineFor(self._robot.game.alignRobotToTargetPose(Target.SCORE_LEFT)),
+      self._robot.game.extend(),
+      self._robot.game.alignRobotToTargetPose(Target.SCORE_LEFT),
       self._robot.game.scoreLeft(),
-      self._robot.game.load().deadlineFor(self.followPath(AutoPath.LEFT_PICKUP_2)),
+      self._robot.game.load().deadlineFor(self.followPath(AutoPath.LEFT_PICKUP_2)).withTimeout(8.0),
       self._robot.game.scoreLeft(),
       self._robot.game.load().deadlineFor(self.followPath(AutoPath.LEFT_PICKUP_3)),
       self._robot.game.scoreLeft(),

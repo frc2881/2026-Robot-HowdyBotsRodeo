@@ -11,21 +11,21 @@ class Game:
   def __init__(self, robot: "RobotCore") -> None:
     self._robot = robot
 
-    SmartDashboard.putNumber("Robot/Launcher/TestSpeed", 0.3)
+    SmartDashboard.putNumber("Robot/Launcher/TestSpeed", 0.8)
 
   def alignRobotToTargetPose(self, target: Target, alignRotationOnly: bool = False) -> Command:
     return (
-      self._robot.drive.alignToTargetPose(self._robot.localization.getRobotPose, lambda: self._robot.targeting.getTargetPose(target), alignRotationOnly)
+      self._robot.drive.alignToTargetPose(lambda: self._robot.localization.getRobotPose(), lambda: self._robot.targeting.getTargetPose(target), alignRotationOnly)
     ).withName(f'Game:AlignRobotToTargetPose:{ target.name }')
 
   def alignRobotToNearestTargetPose(self, targets: list[Target], alignRotationOnly: bool = False) -> Command:
     return (
-      self._robot.drive.alignToTargetPose(self._robot.localization.getRobotPose, lambda: self._robot.targeting.getNearestTargetPose(targets), alignRotationOnly)
+      self._robot.drive.alignToTargetPose(lambda: self._robot.localization.getRobotPose(), lambda: self._robot.targeting.getNearestTargetPose(targets), alignRotationOnly)
     ).withName("Game:AlignRobotToNearestTargetPose")
 
   def alignRobotToTargetHeading(self, target: Target) -> Command:
     return (
-      self._robot.drive.alignToTargetHeading(self._robot.localization.getRobotPose, lambda: self._robot.targeting.getTargetPose(target))
+      self._robot.drive.alignToTargetHeading(lambda: self._robot.localization.getRobotPose(), lambda: self._robot.targeting.getTargetPose(target))
     ).withName(f'Game:AlignRobotToTargetHeading:{ target.name }')
 
   def extend(self) -> Command:
@@ -42,12 +42,11 @@ class Game:
 
   def scoreRight(self) -> Command:
     return (
-      cmd.either(
-        self.alignRobotToTargetPose(Target.SCORE_RIGHT),
-        self.alignRobotToTargetHeading(Target.STABLE_RIGHT).withTimeout(0.75),
-        lambda: self._robot.localization.getRobotZone() == Zone.ALLIANCE_ZONE_RIGHT
-      )
-      .andThen(cmd.waitSeconds(0.5))
+      cmd.select({
+        Zone.ALLIANCE_ZONE_RIGHT: self.alignRobotToTargetPose(Target.SCORE_RIGHT),
+        Zone.ALLIANCE_ZONE_LEFT: self.alignRobotToTargetHeading(Target.STABLE_RIGHT).until(lambda: self._robot.drive.isAlignedToTargetHeading())
+      }, lambda: self._robot.localization.getRobotZone())
+      .andThen(cmd.waitSeconds(0.75))
       .andThen(self._robot.launcher.launch(lambda: self._robot.targeting.getScoringTargetInfo(Target.STABLE_RIGHT).speed))
       .andThen(self._robot.launcher.retract())
       .andThen(self.rumbleControllers(ControllerRumbleMode.BOTH))
@@ -59,7 +58,7 @@ class Game:
         Zone.ALLIANCE_ZONE_LEFT: self.alignRobotToTargetPose(Target.SCORE_LEFT),
         Zone.ALLIANCE_ZONE_RIGHT: self.alignRobotToTargetHeading(Target.STABLE_LEFT).until(lambda: self._robot.drive.isAlignedToTargetHeading())
       }, lambda: self._robot.localization.getRobotZone())
-      .andThen(cmd.waitSeconds(0.5))
+      .andThen(cmd.waitSeconds(0.75))
       .andThen(self._robot.launcher.launch(lambda: self._robot.targeting.getScoringTargetInfo(Target.STABLE_LEFT).speed))
       .andThen(self._robot.launcher.retract())
       .andThen(self.rumbleControllers(ControllerRumbleMode.BOTH))
