@@ -91,8 +91,8 @@ class RobotCore:
     self.driver.povRight().whileTrue(self.auto.followPath(AutoPath.HAYBINE_RIGHT))
     self.driver.povUp().whileTrue(self.game.alignRobotToNearestTargetPose([ Target.CROP_CIRCLE_RIGHT, Target.CROP_CIRCLE_LEFT ]))
     self.driver.povDown().whileTrue(self.game.alignRobotToNearestTargetPose([ Target.BALE_RIGHT, Target.BALE_LEFT ]))
-    self.driver.start().debounce(0.5).whileTrue(self.game.testLauncher())
     self.driver.back().debounce(0.5).whileTrue(self.game.resetGyro())
+    self.driver.start().debounce(0.5).whileTrue(self.game.testLauncher())
 
   def _setupOperator(self) -> None:
     # self.operator.leftStick().whileTrue(cmd.none())
@@ -109,9 +109,8 @@ class RobotCore:
     # self.operator.povRight().whileTrue(cmd.none())
     self.operator.povUp().debounce(0.5).whileTrue(self.launcher.resetToHome())
     self.operator.povDown().debounce(0.5).whileTrue(self.intake.resetToHome())
-    # self.operator.start().whileTrue(cmd.none())
     # self.operator.back().whileTrue(cmd.none())
-    pass
+    # self.operator.start().whileTrue(cmd.none())
 
   def _initTelemetry(self) -> None:
     telemetry.log("Game/Robot/Type", constants.Game.Robot.TYPE.name)
