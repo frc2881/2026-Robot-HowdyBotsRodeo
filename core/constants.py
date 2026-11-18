@@ -77,9 +77,11 @@ class Subsystems:
     TARGET_POSE_ALIGNMENT_CONSTANTS = PoseAlignmentConstants(
       translationControlPID = PID(4.0, 0, 0),
       translationMaxVelocity = 2.0,
+      translationMaxAcceleration = 2.4,
       translationPositionTolerance = 0.25,
       rotationControlPID = PID(4.0, 0, 0),
       rotationMaxVelocity = 540.0,
+      rotationMaxAcceleration = 720.0,
       rotationPositionTolerance = 2.0
     )
 
